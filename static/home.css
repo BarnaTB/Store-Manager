@@ -96,9 +96,9 @@ h1 {
 
 table {
     color: #ffffff;
-    margin: auto;
+    margin: 0 auto;
     text-align: left;
-    width: 70%;
+    width: 100%;
 }
 
 th,
@@ -133,12 +133,49 @@ a {
 
 footer {
     color: #ffffff;
-    background-color: #5c64f8;
     margin-top: 10%;
+    margin-bottom: -10%;
     padding: 25px;
 }
 
+.flex-wrap>input {
+    width: 100%;
+}
+
+table input {
+    background-color: #5c64f8;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+
+table #delete-btn {
+    border: 1px solid rgb(180, 5, 5);
+    color: rgb(180, 5, 5);
+}
+
+table #delete-btn:hover {
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    background-color: rgb(180, 5, 5);
+}
+
+::placeholder {
+    color: #ffffff;
+    opacity: 1;
+}
+
+:-ms-input-placeholder {
+    color: #ffffff;
+}
+
+::-ms-input-placeholder {
+    color: #ffffff;
+}
+
 @media only screen and (max-width: 768px) {
+    body {
+        font-size: 2em;
+    }
 
     th,
     td {
@@ -148,11 +185,64 @@ footer {
     td button {
         padding: 3px;
     }
+
+    .topnav a:not(:first-child) {
+        display: none;
+    }
+
+    .topnav a.icon {
+        float: right;
+        display: block;
+    }
+
+    .topnav.responsive {
+        position: relative;
+    }
+
+    .topnav.responsive a.icon {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+
+    .topnav.responsive a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+
+    .topnav a .container {
+        background-color: #ffffff;
+    }
+
+    .bar1,
+    .bar2,
+    .bar3 {
+        width: 35px;
+        height: 5px;
+        background-color: #5c64f8;
+        margin: 4px 0;
+        transition: 0.4s;
+    }
+
+    .change .bar1 {
+        -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+        transform: rotate(-45deg) translate(-9px, 6px);
+    }
+
+    .change .bar2 {
+        opacity: 0;
+    }
+
+    .change .bar3 {
+        -webkit-transform: rotate(45deg) translate(-8px, -8px);
+        transform: rotate(45deg) translate(-8px, -8px);
+    }
 }
 
 @media only screen and (max-width: 425px) {
     body {
-        font-size: 0.7em;
+        font-size: 1.3em;
     }
 
     th,
