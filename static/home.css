@@ -217,16 +217,4 @@ footer {
         -webkit-transform: rotate(45deg) translate(-8px, -8px);
         transform: rotate(45deg) translate(-8px, -8px);
     }
-
-    /* .container .bar1:hover {
-        background-color: #5c64f8;
-    }
-
-    .container .bar2:hover {
-        background-color: #5c64f8;
-    }
-
-    .container .bar3:hover {
-        background-color: #5c64f8;
-    } */
 }
