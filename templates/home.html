@@ -14,20 +14,65 @@
     <div class="background-image"></div>
     <div class="tinted-image"></div>
     <div class="content">
-        <nav class="nav-bar">
-            <a href="#" class="active">Home</a>
-            <a href="#">Products</a>
-            <a href="#">Profile</a>
-            <a href="../templates/login.html">Log Out</a>
-        </nav>
+        <div class="nav-bar">
+            <div class="topnav" id="my-top-nav">
+                <a href="home.html" id="active">Home</a>
+                <a href="#">Products</a>
+                <a href="#">Profile</a>
+                <a href="../templates/login.html">Log Out</a>
+                <a href="javascript:void(0);" class="icon" onclick="bars(this)">
+                    <div class="container" onclick="">
+                        <div class="bar1"></div>
+                        <div class="bar2"></div>
+                        <div class="bar3"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
         <div class="container">
             <h1>Available Products</h1>
             <div class="products">
-
+                <table>
+                    <thead>
+                        <th>Item</th>
+                        <th>Unit Price</th>
+                        <th>Available Quantity</th>
+                        <th>Sell</th>
+                    </thead>
+                    <tr>
+                        <td>Sugar</td>
+                        <td>3000</td>
+                        <td>100 kg</td>
+                        <td><button type="submit">Add to Cart</button></td>
+                    </tr>
+                    <tr>
+                        <td>Coffee</td>
+                        <td>1500</td>
+                        <td>120 tins</td>
+                        <td><button type="submit">Add to Cart</button></td>
+                    </tr>
+                    <tr>
+                        <td>Salt</td>
+                        <td>800</td>
+                        <td>5 kg</td>
+                        <td><button type="submit">Add to Cart</button></td>
+                    </tr>
+                    <tr>
+                        <td>Baking Flour</td>
+                        <td>800</td>
+                        <td>400 kg</td>
+                        <td><button type="submit">Add to Cart</button></td>
+                    </tr>
+                </table>
             </div>
         </div>
+        <div>
+            <footer>
+                Store-Manager Inc. 2018
+            </footer>
+        </div>
     </div>
-
+    <script src="../script/script.js"></script>
 </body>
 
 </html>
