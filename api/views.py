@@ -1,5 +1,6 @@
 from flask import request, jsonify, Blueprint, json
 from api.models import Product, Sale
+import datetime
 
 
 blueprint = Blueprint('application', __name__)
@@ -102,10 +103,11 @@ def add_sale():
     item_name = data.get('item_name')
     unit_price = data.get('unit_price')
     quantity = data.get('quantity')
+    _id = len(Sale.sales) + 1
 
-    sale = Sale(item_name, unit_price, quantity)
+    sale = Sale(_id, item_name, unit_price, quantity)
 
-    if not sale.validate_sale:
+    if not sale.validate_sale():
         return jsonify({
             'message': 'One of the required fields is empty!'
         }), 400
@@ -114,9 +116,12 @@ def add_sale():
             'message': 'Quantity and unit price should be numbers!'
         }), 400
     total = unit_price * quantity
-    sale = sale = Sale(item_name, unit_price, quantity, total=total)
-    Sale.sales.append(sale)
+    now = datetime.datetime.now()
+    a_sale = Sale(_id, item_name, unit_price, quantity, total=total,
+                  date=now.strftime('%H:%M:%S on %a, %dth %B %Y'))
+    Sale.sales.append(a_sale.__dict__)
+    print(Sale.sales)
     return jsonify({
-        'sale': sale.__dict__,
-        'message': 'Sale made successfully!'
+        'sale': a_sale.__dict__,
+        'message': 'Sold!'
     }), 201
