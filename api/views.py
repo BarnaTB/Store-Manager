@@ -30,8 +30,26 @@ def add_product():
         return jsonify({
             'message': 'The unit price must be a number!'
         }), 400
-    Product.products.append(product)
+    Product.products.append(data)
     return jsonify({
         'product': data,
         'message': 'Product added successfully!'
     }), 201
+
+
+@blueprint.route('/products', methods=['GET'])
+def view_products():
+    """
+    Function enables store owner or attendant to view all products in the store.
+
+    :returns:
+
+    A list of products from the store.
+    """
+    if Product.products == []:
+        return jsonify({
+            'message': 'There are not products yet!'
+        }), 400
+    return jsonify({
+        'products': Product.products
+    }), 200
