@@ -125,3 +125,22 @@ def add_sale():
         'sale': a_sale.__dict__,
         'message': 'Sold!'
     }), 201
+
+
+@blueprint.route('/sales', methods=['GET'])
+def view_all_sales():
+    """
+    Function enables store owner to view all sales records.
+
+    :returns:
+
+    A list of all sales made by all store attendants.
+    """
+    if len(Sale.sales) == 0:
+        return jsonify({
+            'message': 'No sales yet!'
+        }), 400
+    return jsonify({
+        'sales': Sale.sales,
+        'message': 'Sales fetched successfully!'
+    })
