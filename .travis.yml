@@ -9,7 +9,7 @@ install:
   - "pip install -r requirements.txt"
 # command to run tests
 script:
-   - python3 -m pytest --cov api --cov-report term-missing
+   - python3 -m pytest -v --cov api --cov-report term-missing
 
 after_success:
   - coveralls
