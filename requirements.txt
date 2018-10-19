@@ -28,7 +28,6 @@ mccabe==0.6.1
 mistune==0.8.3
 more-itertools==4.3.0
 oauthlib==1.0.3
-onboard==1.2.0
 parse==1.8.4
 passlib==1.7.1
 pathlib2==2.3.2
