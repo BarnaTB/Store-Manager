@@ -144,3 +144,33 @@ def view_all_sales():
         'sales': Sale.sales,
         'message': 'Sales fetched successfully!'
     })
+
+
+@blueprint.route('/sales/<int:sale_id>', methods=['GET'])
+def view_single_sale(sale_id):
+    """
+    Function enables store owner and attendant to be able to view a single
+    sales record.
+
+    :params:
+
+    sale_id - holds integer value of the id of the individual sale to be viewed
+
+    :returns:
+
+    Deatils of the sale whose id matches the one entered by the user.
+    """
+    try:
+        if len(Sale.sales) == 0:
+            return jsonify({
+                'message': 'No sales yet!'
+            }), 404
+        sale = Sale.sales[sale_id - 1]
+        return jsonify({
+            'product': sale,
+            'message': 'Sale fetched!'
+        }), 200
+    except IndexError:
+        return jsonify({
+            'message': 'This sale does not exist!'
+        }), 404
