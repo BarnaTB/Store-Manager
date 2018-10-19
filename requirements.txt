@@ -41,8 +41,6 @@ ptyprocess==0.5
 py==1.5.4
 pyasn1==0.1.9
 pycodestyle==2.4.0
-pycups==1.9.73
-pycurl==7.43.0
 PyJWT==1.6.4
 pylint==2.0.1
 pytest==3.7.2
