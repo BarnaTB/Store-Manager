@@ -1,0 +1,15 @@
+language: python
+python:
+  - "3.5"
+# command to install dependencies
+env:
+  global:
+    - CODECOV_TOKEN="0c4bd51b-2d42-4993-8a05-f486eea0af44"
+install:
+  - "pip install -r requirements.txt"
+# command to run tests
+script:
+   - python3 -m pytest --cov api --cov-report term-missing
+
+after_success:
+  - coveralls
