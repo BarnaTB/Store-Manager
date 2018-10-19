@@ -1,5 +1,7 @@
 # Store-Manager
 
+[![Build Status](https://travis-ci.org/BarnaTB/Store-Manager.svg?branch=ft-api)](https://travis-ci.org/BarnaTB/Store-Manager)
+
 This is a web application that helps store owners manage sales and product inventory records. This application is meant for use in a single store.
 
 ## Getting Started
