@@ -36,7 +36,6 @@ pexpect==4.0.1
 pg8000==1.12.3
 Pillow==3.1.2
 pluggy==0.7.1
-progressbar==2.3
 psycopg2==2.7.5
 ptyprocess==0.5
 py==1.5.4
