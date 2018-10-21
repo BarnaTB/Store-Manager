@@ -53,6 +53,8 @@ Install pytest, source the .env file, run the tests.
 
 ## Deployment
 
+The Python application is hosted on [Heroku](https://store-manag.herokuapp.com)
+
 
 ## Tools Used
 
