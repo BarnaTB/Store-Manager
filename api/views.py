@@ -28,11 +28,11 @@ def add_product():
         return jsonify({
             'message': 'One of the required fields is empty!'
         }), 400
-    if not isinstance(unit_price, int):
+    if not isinstance(unit_price, int) and not isinstance(quantity, int):
         return jsonify({
-            'message': 'The unit price must be a number!'
+            'message': 'The unit price and quantity must be numbers!'
         }), 400
-    Product.products.append(product)
+    Product.products.append(product.__dict__)
     return jsonify({
         'product': product.__dict__,
         'message': 'Product added successfully!'
@@ -54,11 +54,11 @@ def view_products():
             'message': 'There are not products yet!'
         }), 400
     return jsonify({
-        'products': [product.__dict__ for product in Product.products]
+        'products': [product for product in Product.products]
     }), 200
 
 
-@blueprint.route('/products/<int:product_id>')
+@blueprint.route('/products/<int:product_id>', methods=['GET'])
 def view_single_product(product_id):
     """
     Function enables store owner or attendant view details of a specific
@@ -80,7 +80,7 @@ def view_single_product(product_id):
             }), 404
         product = Product.products[product_id - 1]
         return jsonify({
-            'product': product.__dict__,
+            'product': product,
             'message': 'Product fetched!'
         }), 200
     except IndexError:
