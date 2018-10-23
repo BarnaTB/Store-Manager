@@ -120,7 +120,6 @@ def add_sale():
     a_sale = Sale(_id, item_name, unit_price, quantity, total=total,
                   date=now.strftime('%H:%M:%S on %a, %dth %B %Y'))
     Sale.sales.append(a_sale.__dict__)
-    print(Sale.sales)
     return jsonify({
         'sale': a_sale.__dict__,
         'message': 'Sold!'
