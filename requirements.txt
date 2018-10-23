@@ -21,6 +21,7 @@ MarkupSafe==1.0
 more-itertools==4.3.0
 pathlib2==2.3.2
 pluggy==0.8.0
+psycopg2==2.7.5
 py==1.7.0
 pycparser==2.19
 pyOpenSSL==18.0.0
