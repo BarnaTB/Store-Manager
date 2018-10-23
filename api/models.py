@@ -3,7 +3,14 @@ import datetime
 
 class Product:
     """Class handles all operations on a product object"""
-    products = []
+    products = [
+        {
+            'name': 'coffee',
+            'unit_price': 1000,
+            'quantity': 100,
+            '_id': 1
+        }
+    ]
 
     def __init__(self, *args):
         self.name = args[0]
@@ -22,7 +29,7 @@ class Product:
         False - if one or all of the product details  are invalid.
         """
         if not self.name or not self.unit_price or not self.quantity or\
-                self.name.isspace() or self.quantity.isspace():
+                self.name.isspace():
             return False
         else:
             return True
@@ -30,7 +37,16 @@ class Product:
 
 class Sale:
     """Class handles all operations of a sale."""
-    sales = []
+    sales = [
+        {
+            "_id": 1,
+            "date": "20:34:34 on Tue, 23th October 2018",
+            "item_name": "water",
+            "quantity": 100,
+            "total": 100000,
+            "unit_price": 1000
+        }
+    ]
 
     def __init__(self, *args, total=0, date=''):
         self._id = args[0]

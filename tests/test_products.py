@@ -13,7 +13,7 @@ class TestProduct(unittest.TestCase):
         product = dict(
             name='Sugar',
             unit_price=1000,
-            quantity='100kg'
+            quantity=100
         )
         response = self.tester.post(
             '/api/v1/products',
@@ -44,7 +44,7 @@ class TestProduct(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_unit_price_must_be_number(self):
-        """Test that a unit price is strictly a number"""
+        """Test that a unit price and quantity are strictly numbers"""
         product = dict(
             name='Sugar',
             unit_price='bitaano',
@@ -57,7 +57,7 @@ class TestProduct(unittest.TestCase):
         )
         reply = json.loads(response.data.decode())
 
-        self.assertIn('The unit price must be a number!', reply['message'])
+        self.assertIn('The unit price and quantity must be numbers!', reply['message'])
         self.assertEqual(response.status_code, 400)
 
     def test_view_products(self):
@@ -65,7 +65,7 @@ class TestProduct(unittest.TestCase):
         product = dict(
             name='Sugar',
             unit_price=1000,
-            quantity='100kg'
+            quantity=100
         )
         response = self.tester.post(
             '/api/v1/products',
@@ -103,7 +103,7 @@ class TestProduct(unittest.TestCase):
         product = dict(
             name='Sugar',
             unit_price=1000,
-            quantity='100kg'
+            quantity=100
         )
         response = self.tester.post(
             '/api/v1/products',
@@ -130,7 +130,7 @@ class TestProduct(unittest.TestCase):
         product = dict(
             name='Sugar',
             unit_price=1000,
-            quantity='100kg'
+            quantity=100
         )
         response = self.tester.post(
             '/api/v1/products',
