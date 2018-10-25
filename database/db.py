@@ -78,3 +78,31 @@ class DatabaseConnection:
         INSERT INTO users(username, email, password) VALUES ('{}', '{}', '{}');
         """.format(username, email, password)
         self.cursor.execute(insert_user_command)
+
+    def query_username(self, username):
+        """Method to query user by their username"""
+
+        query_username_command = """
+        SELECT * FROM users WHERE username='{}';
+        """.format(username)
+        self.cursor.execute(query_username_command)
+        user = self.cursor.fetchone()
+
+        return user
+
+    def query_email(self, email):
+        """Method to query a user by their email"""
+        query_email_command = """
+        SELECT * FROM users WHERE email = '{}';
+        """.format(email)
+        self.cursor.execute(query_email_command)
+        user = self.cursor.fetchone()
+
+        return user
+
+    def drop_table(self, table_name):
+        """Method to drop tables"""
+        drop_table_command = """
+        DROP TABLE {};
+        """.format(table_name)
+        self.cursor.execute(drop_table_command)

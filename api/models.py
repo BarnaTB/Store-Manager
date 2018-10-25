@@ -1,7 +1,42 @@
 import datetime
+import re
+from passlib.hash import pbkdf2_sha256 as sha256
 from database.db import DatabaseConnection
 
 db = DatabaseConnection()
+
+
+class User:
+    """Class handles user object operations"""
+
+    def __init__(self, *args):
+        self.username = args[0]
+        self.email = args[1]
+        self.password = args[2]
+
+    def generate_hash(self):
+        """Method to generate a hashed password"""
+        return sha256.hash(self.password)
+
+    @staticmethod
+    def query_username(username):
+        """Method to retrieve a username from the database"""
+        user = db.query_username(username)
+
+        if user is None:
+            return False
+        else:
+            return user
+
+    @staticmethod
+    def query_email(email):
+        """Method to retrieve an email from the database"""
+        email = db.query_email(email)
+
+        if email is None:
+            return False
+        else:
+            return True
 
 
 class Product:
@@ -13,33 +48,6 @@ class Product:
         self.unit_price = args[1]
         self.quantity = args[2]
         self._id = args[3]
-
-    def validate_product(self):
-        """
-        Method validates the attributes of a product.
-
-        :returns:
-
-        True - if the product details are all valid.
-
-        False - if one or all of the product details  are invalid.
-        """
-        if not self.name or not self.unit_price or not self.quantity or\
-                self.name.isspace() or self.quantity.isspace():
-            return False
-        else:
-            return True
-
-    @staticmethod
-    def add_product():
-        """
-        Method adds a product into the database.
-
-        :returns:
-
-        The product that has been added to the database
-        """
-        db.
 
 
 class Sale:
@@ -53,19 +61,3 @@ class Sale:
         self.quantity = args[3]
         self.total = total
         self.date = date
-
-    def validate_sale(self):
-        """
-        Method validates a sale.
-
-        :returns:
-
-        True - if the sale is valid.
-
-        False - if the sale is invalid.
-        """
-        if self.item_name == '' or not self.unit_price or not self.quantity or\
-                self.item_name.isspace():
-            return False
-        else:
-            return True

@@ -1,9 +1,72 @@
 from flask import request, jsonify, Blueprint, json
-from api.models import Product, Sale
+from api.models import Product, Sale, User
+from api.validator import ValidateProduct, ValidateSale, ValidateUser
+from database.db import DatabaseConnection
 import datetime
+
+db = DatabaseConnection()
 
 
 blueprint = Blueprint('application', __name__)
+
+
+@blueprint.route('/signup', methods=['POST'])
+def signup():
+    """
+    Function enables user to create an account on the platform.
+
+    :returns:
+
+    A success message upon successful registeration
+    """
+    data = request.get_json()
+
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+
+    user = ValidateUser(username, email, password)
+
+    if not user.validate_username():
+        return jsonify({
+            'message': 'Username cannot be empty or contain numbers!'
+        }), 400
+    elif not user.validate_email():
+        return jsonify({
+            'message': 'Email cannot be empty and must be in the form \
+(john.doe@example.com)'
+        }), 400
+    elif not user.validate_password():
+        return jsonify({
+            'message': 'Password should contain at least one uppercase, \
+lowercase and number characcters and must be longer than 5 characters!'
+        }), 400
+    elif User.query_username(username):
+        return jsonify({
+            'message': 'This username is already taken!'
+        }), 400
+    elif User.query_email(email):
+        return jsonify({
+            'message': 'This email is already taken!'
+        }), 400
+    user = User(username, email, password)
+    hashed_password = user.generate_hash()
+    db.insert_user(username, email, hashed_password)
+    return jsonify({
+        'message': '{} successfully registered!'.format(username)
+    }), 201
+
+
+@blueprint.route('/login', methods=['POST'])
+def login():
+    """
+    Function enables user to log into their account.
+
+    :returns:
+
+    A token and a success message
+    """
+    pass
 
 
 @blueprint.route('/products', methods=['POST'])
@@ -13,7 +76,7 @@ def add_product():
 
     :returns:
 
-    a success message and the product.
+    A success message and the product.
     """
     data = request.get_json()
 
@@ -22,16 +85,17 @@ def add_product():
     quantity = data.get('quantity')
     _id = len(Product.products) + 1
 
-    product = Product(name, unit_price, quantity, _id)
+    product = ValidateProduct(name, unit_price, quantity, _id)
 
     if product.validate_product() is False:
         return jsonify({
             'message': 'One of the required fields is empty!'
         }), 400
-    if not isinstance(unit_price, int):
+    elif not isinstance(unit_price, int):
         return jsonify({
             'message': 'The unit price must be a number!'
         }), 400
+    product = Product(name, unit_price, quantity, _id)
     Product.products.append(product)
     return jsonify({
         'product': product.__dict__,
@@ -105,13 +169,13 @@ def add_sale():
     quantity = data.get('quantity')
     _id = len(Sale.sales) + 1
 
-    sale = Sale(_id, item_name, unit_price, quantity)
+    sale = ValidateSale(item_name, unit_price, quantity)
 
     if not sale.validate_sale():
         return jsonify({
             'message': 'One of the required fields is empty!'
         }), 400
-    if not isinstance(unit_price, int) or not isinstance(quantity, int):
+    elif not isinstance(unit_price, int) or not isinstance(quantity, int):
         return jsonify({
             'message': 'Quantity and unit price should be numbers!'
         }), 400
@@ -120,7 +184,6 @@ def add_sale():
     a_sale = Sale(_id, item_name, unit_price, quantity, total=total,
                   date=now.strftime('%H:%M:%S on %a, %dth %B %Y'))
     Sale.sales.append(a_sale.__dict__)
-    print(Sale.sales)
     return jsonify({
         'sale': a_sale.__dict__,
         'message': 'Sold!'
@@ -158,7 +221,7 @@ def view_single_sale(sale_id):
 
     :returns:
 
-    Deatils of the sale whose id matches the one entered by the user.
+    Details of the sale whose id matches the one entered by the user.
     """
     try:
         if len(Sale.sales) == 0:
