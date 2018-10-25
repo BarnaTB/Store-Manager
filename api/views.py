@@ -15,28 +15,32 @@ def add_product():
 
     a success message and the product.
     """
-    data = request.get_json()
+    try:
+        data = request.get_json()
+        name = data.get('name')
+        unit_price = data.get('unit_price')
+        quantity = data.get('quantity')
+        _id = len(Product.products) + 1
 
-    name = data.get('name')
-    unit_price = data.get('unit_price')
-    quantity = data.get('quantity')
-    _id = len(Product.products) + 1
+        product = Product(name, unit_price, quantity, _id)
 
-    product = Product(name, unit_price, quantity, _id)
-
-    if product.validate_product() is False:
+        if product.validate_product() is False:
+            return jsonify({
+                'message': 'One of the required fields is empty!'
+            }), 400
+        if not isinstance(unit_price, int) and not isinstance(quantity, int):
+            return jsonify({
+                'message': 'The unit price and quantity must be numbers!'
+            }), 400
+        Product.products.append(product.__dict__)
         return jsonify({
-            'message': 'One of the required fields is empty!'
-        }), 400
-    if not isinstance(unit_price, int) and not isinstance(quantity, int):
+            'product': product.__dict__,
+            'message': 'Product added successfully!'
+        }), 201
+    except Exception:
         return jsonify({
-            'message': 'The unit price and quantity must be numbers!'
+            'message': 'Something went wrong with your inputs'
         }), 400
-    Product.products.append(product.__dict__)
-    return jsonify({
-        'product': product.__dict__,
-        'message': 'Product added successfully!'
-    }), 201
 
 
 @blueprint.route('/products', methods=['GET'])
@@ -98,32 +102,37 @@ def add_sale():
 
     The sales records which was just created.
     """
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    item_name = data.get('item_name')
-    unit_price = data.get('unit_price')
-    quantity = data.get('quantity')
-    _id = len(Sale.sales) + 1
+        item_name = data.get('item_name')
+        unit_price = data.get('unit_price')
+        quantity = data.get('quantity')
+        _id = len(Sale.sales) + 1
 
-    sale = Sale(_id, item_name, unit_price, quantity)
+        sale = Sale(_id, item_name, unit_price, quantity)
 
-    if not sale.validate_sale():
+        if not sale.validate_sale():
+            return jsonify({
+                'message': 'One of the required fields is empty!'
+            }), 400
+        if not isinstance(unit_price, int) or not isinstance(quantity, int):
+            return jsonify({
+                'message': 'Quantity and unit price should be numbers!'
+            }), 400
+        total = unit_price * quantity
+        now = datetime.datetime.now()
+        a_sale = Sale(_id, item_name, unit_price, quantity, total=total,
+                    date=now.strftime('%H:%M:%S on %a, %dth %B %Y'))
+        Sale.sales.append(a_sale.__dict__)
         return jsonify({
-            'message': 'One of the required fields is empty!'
-        }), 400
-    if not isinstance(unit_price, int) or not isinstance(quantity, int):
+            'sale': a_sale.__dict__,
+            'message': 'Sold!'
+        }), 201
+    except Exception:
         return jsonify({
-            'message': 'Quantity and unit price should be numbers!'
+            'message': 'Something went wrong with your inputs'
         }), 400
-    total = unit_price * quantity
-    now = datetime.datetime.now()
-    a_sale = Sale(_id, item_name, unit_price, quantity, total=total,
-                  date=now.strftime('%H:%M:%S on %a, %dth %B %Y'))
-    Sale.sales.append(a_sale.__dict__)
-    return jsonify({
-        'sale': a_sale.__dict__,
-        'message': 'Sold!'
-    }), 201
 
 
 @blueprint.route('/sales', methods=['GET'])
