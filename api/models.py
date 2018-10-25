@@ -1,4 +1,7 @@
 import datetime
+from database.db import DatabaseConnection
+
+db = DatabaseConnection()
 
 
 class Product:
@@ -26,6 +29,17 @@ class Product:
             return False
         else:
             return True
+
+    @staticmethod
+    def add_product():
+        """
+        Method adds a product into the database.
+
+        :returns:
+
+        The product that has been added to the database
+        """
+        db.
 
 
 class Sale:
