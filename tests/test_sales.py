@@ -11,10 +11,9 @@ class TestSale(unittest.TestCase):
     def test_add_sale(self):
         """Test that a sales can be added"""
         sale = dict(
-            item_name='sugar',
+            name='sugar',
             unit_price=1000,
-            quantity=10,
-            total=10000
+            quantity=10
         )
 
         response = self.tester.post(
@@ -31,7 +30,7 @@ class TestSale(unittest.TestCase):
     def test_add_answer_with_missing_fields(self):
         """Test that a user cannot make a sale with missing fields"""
         sale = dict(
-            item_name='',
+            name='',
             unit_price=1000,
             quantity=10
         )
@@ -51,7 +50,7 @@ class TestSale(unittest.TestCase):
     def test_user_cannot_add_sale_with_non_digits(self):
         """Test that a user cannot add a sale with non digits"""
         sale = dict(
-            item_name='sugar',
+            name='sugar',
             unit_price='one thousand',
             quantity='ten'
         )
@@ -71,10 +70,9 @@ class TestSale(unittest.TestCase):
     def test_view_sales(self):
         """Test that a user can view all sales records"""
         sale = dict(
-            item_name='sugar',
+            name='sugar',
             unit_price=1000,
-            quantity=10,
-            total=10000
+            quantity=10
         )
 
         response = self.tester.post(
@@ -111,7 +109,7 @@ class TestSale(unittest.TestCase):
     def test_view_individual_sale(self):
         """Test that user can view individual sale record"""
         sale = dict(
-            item_name='sugar',
+            name='sugar',
             unit_price=1000,
             quantity=10,
             total=10000
@@ -151,7 +149,7 @@ class TestSale(unittest.TestCase):
     def test_view_single_sale_which_does_not_exist(self):
         """Test that user cannot sale which does not exist"""
         sale = dict(
-            item_name='sugar',
+            name='sugar',
             unit_price=1000,
             quantity=10,
             total=10000
