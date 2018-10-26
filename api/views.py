@@ -28,7 +28,7 @@ def add_product():
             return jsonify({
                 'message': 'One of the required fields is empty!'
             }), 400
-        if not isinstance(unit_price, int) and not isinstance(quantity, int):
+        if not isinstance(unit_price, int) or not isinstance(quantity, int):
             return jsonify({
                 'message': 'The unit price and quantity must be numbers!'
             }), 400
