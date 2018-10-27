@@ -47,7 +47,7 @@ class TestAuth(unittest.TestCase):
         reply = json.loads(response.data.decode())
 
         self.assertEqual(reply['message'],
-            'Username cannot be empty or contain numbers!')
+                         'Username cannot be empty or contain numbers!')
         self.assertEqual(response.status_code, 400)
 
     def test_registration_with_empty_email_field(self):
@@ -67,7 +67,7 @@ class TestAuth(unittest.TestCase):
         reply = json.loads(response.data.decode())
 
         self.assertEqual(reply['message'],
-            'Email cannot be empty and must be in the form \
+                         'Email cannot be empty and must be in the form \
 (john.doe@example.com)')
         self.assertEqual(response.status_code, 400)
 
@@ -88,7 +88,7 @@ class TestAuth(unittest.TestCase):
         reply = json.loads(response.data.decode())
 
         self.assertEqual(reply['message'],
-            'Password should contain at least one uppercase, \
+                         'Password should contain at least one uppercase, \
 lowercase and number characcters and must be longer than 5 characters!')
         self.assertEqual(response.status_code, 400)
 
@@ -196,8 +196,114 @@ lowercase and number characcters and must be longer than 5 characters!')
 
         reply = json.loads(response.data.decode())
 
-        self.assertEqual(reply['message'], 'barna is logged in successfully!')
+        self.assertEqual(reply['message'], 'Logged in!')
         self.assertEqual(response.status_code, 200)
+
+    def test_login_with_empty_input_fields(self):
+        """Test that a user cannot login with empty inputs"""
+        user = dict(
+            username='barna',
+            email='barna@mail.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'barna successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        user = dict(
+            username='',
+            password=''
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'],
+                         'One of the required fields is empty!')
+        self.assertEqual(response.status_code, 400)
+
+    def test_login_with_wrong_username(self):
+        """Test that a user cannot login with a wrong username"""
+        user = dict(
+            username='barna',
+            email='barna@mail.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'barna successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        user = dict(
+            username='barn',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Sorry wrong username!')
+        self.assertEqual(response.status_code, 400)
+
+    def test_login_with_wrong_password(self):
+        """Test that a user cannot login with a wrong password"""
+        user = dict(
+            username='barna',
+            email='barna@mail.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'barna successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        user = dict(
+            username='barna',
+            password='Pass234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Sorry wrong password!')
+        self.assertEqual(response.status_code, 400)
 
     def tearDown(self):
         self.db.drop_table('users')

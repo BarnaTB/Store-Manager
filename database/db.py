@@ -37,9 +37,9 @@ class DatabaseConnection:
                 """
                 CREATE TABLE IF NOT EXISTS products (
                     product_id SERIAL,
-                    product_name TEXT NOT NULL PRIMARY KEY,
-                    quantity TEXT NOT NULL,
-                    unit_price TEXT NOT NULL
+                    name TEXT NOT NULL PRIMARY KEY,
+                    quantity INTEGER NOT NULL,
+                    unit_price INTEGER NOT NULL
                     );
                 """
             )
@@ -49,8 +49,8 @@ class DatabaseConnection:
                 CREATE TABLE IF NOT EXISTS sales (
                     sales_id SERIAL PRIMARY KEY,
                     sale_author TEXT NOT NULL,
-                    product_name TEXT NOT NULL,
-                    quantity INTEGR NOT NULL,
+                    name TEXT NOT NULL,
+                    quantity INTEGER NOT NULL,
                     total_price INTEGER NOT NULL,
                     purchase_date TIMESTAMP
                     );
@@ -62,43 +62,53 @@ class DatabaseConnection:
             print(e)
             print('Failed to connect to database!')
 
-    def insert_product(self, product_name, quantity, unit_price):
+    def insert_product(self, name, quantity, unit_price):
         """SQL query to add a product to the database"""
 
         insert_product_command = """
-        INSERT INTO products(product_name, quantity, unit_price)\
+        INSERT INTO products(name, quantity, unit_price)\
         VALUES('{}', '{}', '{}');
-        """.format(product_name, quantity, unit_price)
+        """.format(name, quantity, unit_price)
         self.cursor.execute(insert_product_command)
 
-    def insert_user(self, username, email, password):
+    def insert_user(self, username, email, password, admin):
         """Method to insert a new user to the database"""
 
         insert_user_command = """
-        INSERT INTO users(username, email, password) VALUES ('{}', '{}', '{}');
-        """.format(username, email, password)
+        INSERT INTO users(username, email, password, admin)\
+        VALUES ('{}', '{}', '{}', '{}');
+        """.format(username, email, password, admin)
         self.cursor.execute(insert_user_command)
 
-    def query_username(self, username):
+    def query(self, table, column, value):
         """Method to query user by their username"""
 
-        query_username_command = """
-        SELECT * FROM users WHERE username='{}';
-        """.format(username)
-        self.cursor.execute(query_username_command)
-        user = self.cursor.fetchone()
+        query_user_command = """
+        SELECT * FROM {} WHERE {}='{}';
+        """.format(table, column, value)
+        self.cursor.execute(query_user_command)
+        row = self.cursor.fetchone()
 
-        return user
+        return row
 
-    def query_email(self, email):
-        """Method to query a user by their email"""
-        query_email_command = """
-        SELECT * FROM users WHERE email = '{}';
-        """.format(email)
-        self.cursor.execute(query_email_command)
-        user = self.cursor.fetchone()
+    def query_all(self, table):
+        """Method enables user to retrieve all rows in a table"""
 
-        return user
+        query_command = """
+        SELECT * FROM {};
+        """.format(table)
+        self.cursor.execute(query_command)
+        rows = self.cursor.fetchall()
+
+        return rows
+
+    def make_admin(self, status, username):
+        """Method to make a normal user an admin"""
+
+        make_admin_command = """
+        UPDATE users SET admin='{}' WHERE username='{}';
+        """.format(status, username)
+        self.cursor.execute(make_admin_command)
 
     def drop_table(self, table_name):
         """Method to drop tables"""
