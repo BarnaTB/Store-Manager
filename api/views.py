@@ -1,7 +1,9 @@
 from flask import request, jsonify, Blueprint, json
 from api.models import Product, Sale, User
-from api.validator import ValidateProduct, ValidateSale, ValidateUser
+from api.validator import ValidateItem, ValidateUser
 from database.db import DatabaseConnection
+from flask_jwt_extended import (create_access_token,
+                                get_jwt_identity, jwt_required)
 import datetime
 
 db = DatabaseConnection()
@@ -51,7 +53,9 @@ lowercase and number characcters and must be longer than 5 characters!'
         }), 400
     user = User(username, email, password)
     hashed_password = user.generate_hash()
-    db.insert_user(username, email, hashed_password)
+    user = User(username, email, hashed_password)
+    username = user.insert_user()
+
     return jsonify({
         'message': '{} successfully registered!'.format(username)
     }), 201
@@ -66,10 +70,35 @@ def login():
 
     A token and a success message
     """
-    pass
+    data = request.get_json()
+
+    username = data.get('username')
+    password = data.get('password')
+
+    user = ValidateUser(username, False, password)
+
+    if not user.validate_username() or not password or password.isspace():
+        return jsonify({
+            'message': 'One of the required fields is empty!'
+        }), 400
+    elif not User.query_username(username):
+        return jsonify({
+            'message': 'Sorry wrong username!'
+        }), 400
+    elif not User.verify_password(username, password):
+        return jsonify({
+            'message': 'Sorry wrong password!'
+        }), 400
+    user = User.query_username(username)
+    token = create_access_token(identity=username)
+    return jsonify({
+        'token': token,
+        'message': 'Logged in!'
+    }), 200
 
 
 @blueprint.route('/products', methods=['POST'])
+@jwt_required
 def add_product():
     """
     Function adds a product to the products list.
@@ -78,29 +107,39 @@ def add_product():
 
     A success message and the product.
     """
-    data = request.get_json()
+    username = get_jwt_identity()
+    user = User.query_username(username)
 
-    name = data.get('name')
-    unit_price = data.get('unit_price')
-    quantity = data.get('quantity')
-    _id = len(Product.products) + 1
-
-    product = ValidateProduct(name, unit_price, quantity, _id)
-
-    if product.validate_product() is False:
+    if user[-1] is False:
         return jsonify({
-            'message': 'One of the required fields is empty!'
-        }), 400
-    elif not isinstance(unit_price, int):
+            'message': 'You are not authorized to access this!'
+        }), 503
+    else:
+        data = request.get_json()
+
+        name = data.get('name')
+        unit_price = data.get('unit_price')
+        quantity = data.get('quantity')
+        _id = len(Product.products) + 1
+
+        validate_product = ValidateItem(name, unit_price, quantity, _id)
+        product = Product(name, quantity, unit_price, _id)
+        if validate_product.validate() is False:
+            return jsonify({
+                'message': 'One of the required fields is empty!'
+            }), 400
+        elif not isinstance(unit_price, int) or not isinstance(quantity, int):
+            return jsonify({
+                'message': 'The unit price and quantity must be numbers!'
+            }), 400
+        elif not product.insert_product():
+            return jsonify({
+                'message': 'This product already exists!'
+            }), 400
         return jsonify({
-            'message': 'The unit price must be a number!'
-        }), 400
-    product = Product(name, unit_price, quantity, _id)
-    Product.products.append(product)
-    return jsonify({
-        'product': product.__dict__,
-        'message': 'Product added successfully!'
-    }), 201
+            'product': product.__dict__,
+            'message': 'Product added successfully!'
+        }), 201
 
 
 @blueprint.route('/products', methods=['GET'])
@@ -113,12 +152,12 @@ def view_products():
 
     A list of products from the store.
     """
-    if len(Product.products) == 0:
+    if not Product.query_all_products():
         return jsonify({
             'message': 'There are not products yet!'
         }), 400
     return jsonify({
-        'products': [product.__dict__ for product in Product.products]
+        'products': Product.products
     }), 200
 
 
@@ -137,20 +176,19 @@ def view_single_product(product_id):
 
     A product that matches the product_id that was entered.
     """
-    try:
-        if len(Product.products) == 0:
-            return jsonify({
-                'message': 'There are no products yet!'
-            }), 404
-        product = Product.products[product_id - 1]
+    if not Product.query_all_products():
         return jsonify({
-            'product': product.__dict__,
-            'message': 'Product fetched!'
-        }), 200
-    except IndexError:
+            'message': 'There are no products yet!'
+        }), 404
+    product = Product.query_product(product_id)
+    if not product:
         return jsonify({
             'message': 'This product does not exist!'
-        }), 404
+        }), 400
+    return jsonify({
+        'product': product,
+        'message': 'Product fetched!'
+    }), 200
 
 
 @blueprint.route('/sales', methods=['POST'])
@@ -164,14 +202,14 @@ def add_sale():
     """
     data = request.get_json()
 
-    item_name = data.get('item_name')
+    name = data.get('name')
     unit_price = data.get('unit_price')
     quantity = data.get('quantity')
     _id = len(Sale.sales) + 1
 
-    sale = ValidateSale(item_name, unit_price, quantity)
+    sale = ValidateItem(name, unit_price, quantity, _id)
 
-    if not sale.validate_sale():
+    if not sale.validate():
         return jsonify({
             'message': 'One of the required fields is empty!'
         }), 400
@@ -181,7 +219,7 @@ def add_sale():
         }), 400
     total = unit_price * quantity
     now = datetime.datetime.now()
-    a_sale = Sale(_id, item_name, unit_price, quantity, total=total,
+    a_sale = Sale(_id, name, unit_price, quantity, total=total,
                   date=now.strftime('%H:%M:%S on %a, %dth %B %Y'))
     Sale.sales.append(a_sale.__dict__)
     return jsonify({

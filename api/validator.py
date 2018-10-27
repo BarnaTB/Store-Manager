@@ -1,13 +1,39 @@
 import re
 
 
+class ValidateItem:
+    """Class to validate product attributes"""
+
+    def __init__(self, name, unit_price, quantity, _id):
+        self.name = name
+        self.unit_price = unit_price
+        self.quantity = quantity
+        self._id = _id
+
+    def validate(self):
+        """
+        Method validates the attributes of a product.
+
+        :returns:
+
+        True - if the product details are all valid.
+
+        False - if one or all of the product details  are invalid.
+        """
+        if not self.name or not self.unit_price or not self.quantity or\
+                self.name.isspace():
+            return False
+        else:
+            return True
+
+
 class ValidateUser:
     """Class to validate user attributes"""
 
-    def __init__(self, *args):
-        self.username = args[0]
-        self.email = args[1]
-        self.password = args[2]
+    def __init__(self, username, email, password):
+        self.username = username
+        self.email = email
+        self.password = password
 
     def validate_username(self):
         """
@@ -58,56 +84,6 @@ class ValidateUser:
 
         if not self.password or not all((lower_case, upper_case, numbers))\
                 or not len(self.password) > 5:
-            return False
-        else:
-            return True
-
-
-class ValidateProduct:
-    """Class to validate product attributes"""
-
-    def __init__(self, *args):
-        self.name = args[0]
-        self.unit_price = args[1]
-        self.quantity = args[2]
-        self._id = args[3]
-
-    def validate_product(self):
-        """
-        Method validates the attributes of a product.
-
-        :returns:
-
-        True - if the product details are all valid.
-
-        False - if one or all of the product details  are invalid.
-        """
-        if not self.name or not self.unit_price or not self.quantity or\
-                self.name.isspace() or self.quantity.isspace():
-            return False
-        else:
-            return True
-
-
-class ValidateSale:
-    """Class to validate sales attributes"""
-    def __init__(self, *args):
-        self.item_name = args[0]
-        self.unit_price = args[1]
-        self.quantity = args[2]
-
-    def validate_sale(self):
-        """
-        Method validates a sale.
-
-        :returns:
-
-        True - if the sale is valid.
-
-        False - if the sale is invalid.
-        """
-        if self.item_name == '' or not self.unit_price or not self.quantity or\
-                self.item_name.isspace():
             return False
         else:
             return True
