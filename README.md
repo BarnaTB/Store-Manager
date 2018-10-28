@@ -35,12 +35,14 @@ The UI pages do not need much to be viewed as any web browser can view them from
 ## Endpoints
 HTTP Method | Endpoint | Functionality | Parameters | Protected
 ----------- | -------- | ------------- | ---------- | ---------
-POST | /products | Create a product | None | False
-GET | /products/int:product_id | Fetch a single product record | product_id | False
+POST | /signup | Register an attendant | None | False
+POST | /login | Login into account | None | False
+POST | /products | Create a product | None | True
+GET | /products/int:product_id | Fetch a single product record | product_id | True
 GET | /products | Fetch all products | None | False
-POST | /sales | Create a sale order | None | False
-GET | /sales/sale_id | Fetch a single sale record | sale_id | False
-GET | /sales | Fetch all sale records | None | False
+POST | /sales | Create a sale order | None | True
+GET | /sales/sale_id | Fetch a single sale record | sale_id | True
+GET | /sales | Fetch all sale records | None | True
 
 ## Running the tests
 
