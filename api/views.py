@@ -43,11 +43,11 @@ def signup():
             'message': 'Password should contain at least one uppercase, \
 lowercase and number characcters and must be longer than 5 characters!'
         }), 400
-    elif User.query_username(username):
+    elif Product.query('users', 'username', username):
         return jsonify({
             'message': 'This username is already taken!'
         }), 400
-    elif User.query_email(email):
+    elif Product.query('users', 'email', email):
         return jsonify({
             'message': 'This email is already taken!'
         }), 400
@@ -81,7 +81,7 @@ def login():
         return jsonify({
             'message': 'One of the required fields is empty!'
         }), 400
-    elif not User.query_username(username):
+    elif not Product.query('users', 'username', username):
         return jsonify({
             'message': 'Sorry wrong username!'
         }), 400
@@ -89,7 +89,6 @@ def login():
         return jsonify({
             'message': 'Sorry wrong password!'
         }), 400
-    user = User.query_username(username)
     token = create_access_token(identity=username)
     return jsonify({
         'token': token,
@@ -108,7 +107,7 @@ def add_product():
     A success message and the product.
     """
     username = get_jwt_identity()
-    user = User.query_username(username)
+    user = Product.query('users', 'username', username)
 
     if user[-1] is False:
         return jsonify({
@@ -185,16 +184,41 @@ def view_single_product(product_id):
         return jsonify({
             'message': 'This product does not exist!'
         }), 400
-    product_dict = {
+    return jsonify({
+        'product': {
             '_id': product[0],
             'name': product[1],
             'quantity': product[2],
             'unit_price': product[3]
-        }
-    return jsonify({
-        'product': product_dict,
+        },
         'message': 'Product fetched!'
     }), 200
+
+
+@blueprint.route('/products/<int:product_id>', methods=['POST'])
+@jwt_required
+def update_product(product_id):
+    """
+    Function enables admin user to modify the details of a product.
+
+    :params:
+
+    product_id - holds integer value of the id of the product to be
+    modified.
+
+    :returns:
+
+    A dictionary object of the updated product.
+    """
+    username = get_jwt_identity()
+    user = Product.query('users', 'username', username)
+
+    if user[-1] is False:
+        return jsonify({
+            'message': 'You are not authorized to access this!'
+        }), 503
+    else:
+        pass
 
 
 @blueprint.route('/sales', methods=['POST'])
@@ -229,27 +253,20 @@ def add_sale():
         return jsonify({
             'message': 'This product does not exist!'
         }), 400
-    product_dict = {
-            '_id': product[0],
-            'name': product[1],
-            'quantity': product[2],
-            'unit_price': product[3]
-        }
-    if product_dict['quantity'] <= 0:
+    elif product[2] <= 0:
         return jsonify({
             'message': 'Product is out of stock!'
         }), 400
-    elif product_dict['quantity'] < quantity:
+    elif product[2] < quantity:
         return jsonify({
             'message': 'Unfortunately we have less than you require!'
         }), 400
-    unit_price = product_dict['unit_price']
-    total = unit_price * quantity
+    total = product[3] * quantity
     now = datetime.datetime.now()
-    a_sale = Sale(name, quantity, unit_price, username, total,
+    a_sale = Sale(name, quantity, product[3], username, total,
                   now.strftime('%H:%M:%S on %a, %dth %B %Y'))
     sale = a_sale.insert_sale()
-    new_quantity = product_dict['quantity'] - quantity
+    new_quantity = product[2] - quantity
     a_sale.update('products', 'quantity', new_quantity, 'name', name)
     return jsonify({
         'sale': sale,
@@ -268,7 +285,7 @@ def view_all_sales():
     A list of all sales made by all store attendants.
     """
     username = get_jwt_identity()
-    user = User.query_username(username)
+    user = Product.query('users', 'username', username)
 
     if user[-1] is False:
         return jsonify({
@@ -320,7 +337,7 @@ def view_single_sale(sale_id):
         'total_price': sale[5],
         'purchase_date': sale[6]
     }
-    user = User.query_username(username)
+    user = Product.query('users', 'username', username)
 
     if sale_dict['sale_author'] != username and user[-1] is False:
         return jsonify({

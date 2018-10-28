@@ -192,26 +192,6 @@ class User:
         return sha256.hash(self.password)
 
     @staticmethod
-    def query_username(username):
-        """Method to retrieve a username from the database"""
-        user = db.query('users', 'username', username)
-
-        if user is None:
-            return False
-        else:
-            return user
-
-    @staticmethod
-    def query_email(email):
-        """Method to retrieve an email from the database"""
-        email = db.query('users', 'email', email)
-
-        if email is None:
-            return False
-        else:
-            return True
-
-    @staticmethod
     def verify_password(username, password):
         """Method to verify a password hash"""
         user = User.query_username(username)

@@ -133,6 +133,15 @@ class DatabaseConnection:
         """.format(table, column, new_status, cell, value)
         self.cursor.execute(update_command)
 
+    def update_many(self, product_id, name, quantity, unit_price):
+        """Method to make update multiple columns"""
+
+        update_many_command = """
+        UPDATE products SET name='{}', quantity='{}', unit_price='{}'\
+        WHERE product_id='{}';
+        """.format(name, quantity, unit_price, product_id)
+        self.cursor.execute(update_many_command)
+
     def drop_table(self, table_name):
         """Method to drop tables"""
         drop_table_command = """
