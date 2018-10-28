@@ -1,6 +1,6 @@
 from flask import request, jsonify, Blueprint, json
 from api.models import Product, Sale, User
-from api.validator import ValidateItem, ValidateUser
+from api.validator import ValidateProduct, ValidateSale, ValidateUser
 from database.db import DatabaseConnection
 from flask_jwt_extended import (create_access_token,
                                 get_jwt_identity, jwt_required)
@@ -118,12 +118,11 @@ def add_product():
         data = request.get_json()
 
         name = data.get('name')
-        unit_price = data.get('unit_price')
         quantity = data.get('quantity')
-        _id = len(Product.products) + 1
+        unit_price = data.get('unit_price')
 
-        validate_product = ValidateItem(name, unit_price, quantity, _id)
-        product = Product(name, quantity, unit_price, _id)
+        validate_product = ValidateProduct(name, quantity, unit_price)
+        product = Product(name, quantity, unit_price)
         if validate_product.validate() is False:
             return jsonify({
                 'message': 'One of the required fields is empty!'
@@ -132,12 +131,13 @@ def add_product():
             return jsonify({
                 'message': 'The unit price and quantity must be numbers!'
             }), 400
-        elif not product.insert_product():
+        product_dict = product.insert_product()
+        if not product_dict:
             return jsonify({
                 'message': 'This product already exists!'
             }), 400
         return jsonify({
-            'product': product.__dict__,
+            'product': product_dict,
             'message': 'Product added successfully!'
         }), 201
 
@@ -152,7 +152,7 @@ def view_products():
 
     A list of products from the store.
     """
-    if not Product.query_all_products():
+    if not Product.query_all('products'):
         return jsonify({
             'message': 'There are not products yet!'
         }), 400
@@ -176,22 +176,29 @@ def view_single_product(product_id):
 
     A product that matches the product_id that was entered.
     """
-    if not Product.query_all_products():
+    if not Product.query_all('products'):
         return jsonify({
             'message': 'There are no products yet!'
         }), 404
-    product = Product.query_product(product_id)
+    product = Product.query('products', 'product_id', product_id)
     if not product:
         return jsonify({
             'message': 'This product does not exist!'
         }), 400
+    product_dict = {
+            '_id': product[0],
+            'name': product[1],
+            'quantity': product[2],
+            'unit_price': product[3]
+        }
     return jsonify({
-        'product': product,
+        'product': product_dict,
         'message': 'Product fetched!'
     }), 200
 
 
 @blueprint.route('/sales', methods=['POST'])
+@jwt_required
 def add_sale():
     """
     Function enables store attendant to create a sale.
@@ -200,35 +207,58 @@ def add_sale():
 
     The sales records which was just created.
     """
+    username = get_jwt_identity()
+
     data = request.get_json()
 
     name = data.get('name')
-    unit_price = data.get('unit_price')
     quantity = data.get('quantity')
-    _id = len(Sale.sales) + 1
 
-    sale = ValidateItem(name, unit_price, quantity, _id)
+    sale = ValidateSale(name, quantity)
 
     if not sale.validate():
         return jsonify({
             'message': 'One of the required fields is empty!'
         }), 400
-    elif not isinstance(unit_price, int) or not isinstance(quantity, int):
+    elif not isinstance(quantity, int):
         return jsonify({
-            'message': 'Quantity and unit price should be numbers!'
+            'message': 'Quantity should be a number!'
         }), 400
+    product = Sale.query('products', 'name', name)
+    if not product:
+        return jsonify({
+            'message': 'This product does not exist!'
+        }), 400
+    product_dict = {
+            '_id': product[0],
+            'name': product[1],
+            'quantity': product[2],
+            'unit_price': product[3]
+        }
+    if product_dict['quantity'] <= 0:
+        return jsonify({
+            'message': 'Product is out of stock!'
+        }), 400
+    elif product_dict['quantity'] < quantity:
+        return jsonify({
+            'message': 'Unfortunately we have less than you require!'
+        }), 400
+    unit_price = product_dict['unit_price']
     total = unit_price * quantity
     now = datetime.datetime.now()
-    a_sale = Sale(_id, name, unit_price, quantity, total=total,
-                  date=now.strftime('%H:%M:%S on %a, %dth %B %Y'))
-    Sale.sales.append(a_sale.__dict__)
+    a_sale = Sale(name, quantity, unit_price, username, total,
+                  now.strftime('%H:%M:%S on %a, %dth %B %Y'))
+    sale = a_sale.insert_sale()
+    new_quantity = product_dict['quantity'] - quantity
+    a_sale.update('products', 'quantity', new_quantity, 'name', name)
     return jsonify({
-        'sale': a_sale.__dict__,
+        'sale': sale,
         'message': 'Sold!'
     }), 201
 
 
 @blueprint.route('/sales', methods=['GET'])
+@jwt_required
 def view_all_sales():
     """
     Function enables store owner to view all sales records.
@@ -237,17 +267,25 @@ def view_all_sales():
 
     A list of all sales made by all store attendants.
     """
-    if len(Sale.sales) == 0:
+    username = get_jwt_identity()
+    user = User.query_username(username)
+
+    if user[-1] is False:
+        return jsonify({
+            'message': 'You are not authorized to access this!'
+        }), 503
+    elif not Sale.query_all_sales('sales'):
         return jsonify({
             'message': 'No sales yet!'
         }), 400
     return jsonify({
-        'sales': Sale.sales,
+        'sales': Sale.query_all_sales('sales'),
         'message': 'Sales fetched successfully!'
-    })
+    }), 200
 
 
 @blueprint.route('/sales/<int:sale_id>', methods=['GET'])
+@jwt_required
 def view_single_sale(sale_id):
     """
     Function enables store owner and attendant to be able to view a single
@@ -261,17 +299,34 @@ def view_single_sale(sale_id):
 
     Details of the sale whose id matches the one entered by the user.
     """
-    try:
-        if len(Sale.sales) == 0:
-            return jsonify({
-                'message': 'No sales yet!'
-            }), 404
-        sale = Sale.sales[sale_id - 1]
+    username = get_jwt_identity()
+
+    sale = Sale.query('sales', 'sales_id', sale_id)
+
+    if not Sale.query_all('sales'):
         return jsonify({
-            'product': sale,
-            'message': 'Sale fetched!'
-        }), 200
-    except IndexError:
+            'message': 'No sales yet!'
+        }), 400
+    elif not sale:
         return jsonify({
             'message': 'This sale does not exist!'
-        }), 404
+        }), 400
+    sale_dict = {
+        'sales_id': sale[0],
+        'sale_author': sale[1],
+        'name': sale[2],
+        'quantity': sale[3],
+        'unit_price': sale[4],
+        'total_price': sale[5],
+        'purchase_date': sale[6]
+    }
+    user = User.query_username(username)
+
+    if sale_dict['sale_author'] != username and user[-1] is False:
+        return jsonify({
+            'message': 'You are not authorized to access this!'
+        }), 503
+    return jsonify({
+        'sale': sale_dict,
+        'message': 'Sale fetched!'
+    }), 200
