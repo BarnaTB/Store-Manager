@@ -114,6 +114,26 @@ class Product(object):
 
         db.update(table, column, new_status, cell, value)
 
+    def update_product(self, product_id):
+        """
+        Method enables admin user update a product in the database.
+
+        :returns:
+
+        Dictionary object of the updated product.
+        """
+        product = db.query('products', 'product_id', product_id)
+        if product is None:
+            return False
+        db.update_many(self.name, self.quantity, self.unit_price, product_id)
+        product = db.query('products', 'product_id', product_id)
+        return {
+            '_id': product[0],
+            'name': product[1],
+            'quantity': product[2],
+            'unit_price': product[3]
+        }
+
 
 class Sale(Product):
     """Class handles all operations of a sale."""
@@ -194,7 +214,7 @@ class User:
     @staticmethod
     def verify_password(username, password):
         """Method to verify a password hash"""
-        user = User.query_username(username)
+        user = Product.query('users', 'username', username)
         if not sha256.verify(password, user[3]):
             return False
         return True

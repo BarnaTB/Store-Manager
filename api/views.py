@@ -195,7 +195,7 @@ def view_single_product(product_id):
     }), 200
 
 
-@blueprint.route('/products/<int:product_id>', methods=['POST'])
+@blueprint.route('/products/<int:product_id>', methods=['PUT'])
 @jwt_required
 def update_product(product_id):
     """
@@ -218,7 +218,31 @@ def update_product(product_id):
             'message': 'You are not authorized to access this!'
         }), 503
     else:
-        pass
+        data = request.get_json()
+
+        name = data.get('name')
+        quantity = data.get('quantity')
+        unit_price = data.get('unit_price')
+
+        validate_product = ValidateProduct(name, quantity, unit_price)
+        product = Product(name, quantity, unit_price)
+        if validate_product.validate() is False:
+            return jsonify({
+                'message': 'One of the required fields is empty!'
+            }), 400
+        elif not isinstance(unit_price, int) or not isinstance(quantity, int):
+            return jsonify({
+                'message': 'The unit price and quantity must be numbers!'
+            }), 400
+        product_dict = product.update_product(product_id)
+        if not product_dict:
+            return jsonify({
+                'message': 'This product does not exist!'
+            }), 400
+        return jsonify({
+            'product': product_dict,
+            'message': 'Product updated!'
+        }), 201
 
 
 @blueprint.route('/sales', methods=['POST'])

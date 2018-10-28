@@ -11,6 +11,7 @@ class DatabaseConnection:
                 self.db = 'test_db'
             else:
                 self.db = 'storemanager_db'
+
             self.connection = psycopg2.connect(
                 database=self.db,
                 user='postgres',
@@ -133,7 +134,7 @@ class DatabaseConnection:
         """.format(table, column, new_status, cell, value)
         self.cursor.execute(update_command)
 
-    def update_many(self, product_id, name, quantity, unit_price):
+    def update_many(self, name, quantity, unit_price, product_id):
         """Method to make update multiple columns"""
 
         update_many_command = """
