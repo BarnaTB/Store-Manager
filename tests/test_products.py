@@ -83,7 +83,7 @@ class TestProduct(unittest.TestCase):
         self.assertEqual(reply['message'], 'admin successfully registered!')
         self.assertEqual(response.status_code, 201)
 
-        self.db.make_admin('true', 'admin')
+        self.db.update('users', 'admin', 'true', 'username', 'admin')
 
         user = dict(
             username='admin',
@@ -138,7 +138,7 @@ class TestProduct(unittest.TestCase):
         self.assertEqual(reply['message'], 'admin successfully registered!')
         self.assertEqual(response.status_code, 201)
 
-        self.db.make_admin('true', 'admin')
+        self.db.update('users', 'admin', 'true', 'username', 'admin')
 
         user = dict(
             username='admin',
@@ -194,7 +194,7 @@ class TestProduct(unittest.TestCase):
         self.assertEqual(reply['message'], 'admin successfully registered!')
         self.assertEqual(response.status_code, 201)
 
-        self.db.make_admin('true', 'admin')
+        self.db.update('users', 'admin', 'true', 'username', 'admin')
 
         user = dict(
             username='admin',
@@ -250,7 +250,7 @@ class TestProduct(unittest.TestCase):
         self.assertEqual(reply['message'], 'admin successfully registered!')
         self.assertEqual(response.status_code, 201)
 
-        self.db.make_admin('true', 'admin')
+        self.db.update('users', 'admin', 'true', 'username', 'admin')
 
         user = dict(
             username='admin',
@@ -317,7 +317,7 @@ class TestProduct(unittest.TestCase):
         self.assertEqual(reply['message'], 'admin successfully registered!')
         self.assertEqual(response.status_code, 201)
 
-        self.db.make_admin('true', 'admin')
+        self.db.update('users', 'admin', 'true', 'username', 'admin')
 
         user = dict(
             username='admin',
@@ -392,7 +392,7 @@ class TestProduct(unittest.TestCase):
         self.assertEqual(reply['message'], 'admin successfully registered!')
         self.assertEqual(response.status_code, 201)
 
-        self.db.make_admin('true', 'admin')
+        self.db.update('users', 'admin', 'true', 'username', 'admin')
 
         user = dict(
             username='admin',
@@ -456,7 +456,7 @@ class TestProduct(unittest.TestCase):
         self.assertEqual(reply['message'], 'admin successfully registered!')
         self.assertEqual(response.status_code, 201)
 
-        self.db.make_admin('true', 'admin')
+        self.db.update('users', 'admin', 'true', 'username', 'admin')
 
         user = dict(
             username='admin',
@@ -515,3 +515,4 @@ class TestProduct(unittest.TestCase):
     def tearDown(self):
         self.db.drop_table('products')
         self.db.drop_table('users')
+        self.db.drop_table('sales')

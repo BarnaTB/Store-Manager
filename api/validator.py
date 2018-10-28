@@ -1,14 +1,35 @@
 import re
 
 
-class ValidateItem:
+class ValidateSale(object):
+    """Class to validate a sales record attributes"""
+
+    def __init__(self, name, quantity):
+        self.name = name
+        self.quantity = quantity
+
+    def validate(self):
+        """
+        Method validates the attributes of a sale.
+
+        :returns:
+
+        True - if the sale details are all valid.
+
+        False - if one or all of the sale attributes  are invalid.
+        """
+        if not self.name or not self.quantity or self.name.isspace():
+            return False
+        else:
+            return True
+
+
+class ValidateProduct(ValidateSale):
     """Class to validate product attributes"""
 
-    def __init__(self, name, unit_price, quantity, _id):
-        self.name = name
+    def __init__(self, name, quantity, unit_price):
+        ValidateSale.__init__(self, name, quantity)
         self.unit_price = unit_price
-        self.quantity = quantity
-        self._id = _id
 
     def validate(self):
         """
@@ -42,6 +63,7 @@ class ValidateUser:
         :returns:
 
         True - if username is valid
+
         False - if username is not valid
         """
 
@@ -58,6 +80,7 @@ class ValidateUser:
         :returns:
 
         True - if email is valid
+
         False - if email is not valid
         """
 
@@ -75,6 +98,7 @@ class ValidateUser:
         :returns:
 
         True - if password is valid
+
         False - if password is not valid
         """
 

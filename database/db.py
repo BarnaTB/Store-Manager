@@ -51,8 +51,9 @@ class DatabaseConnection:
                     sale_author TEXT NOT NULL,
                     name TEXT NOT NULL,
                     quantity INTEGER NOT NULL,
+                    unit_price INTEGER NOT NULL,
                     total_price INTEGER NOT NULL,
-                    purchase_date TIMESTAMP
+                    purchase_date TEXT NOT NULL
                     );
                 """
             )
@@ -80,6 +81,23 @@ class DatabaseConnection:
         """.format(username, email, password, admin)
         self.cursor.execute(insert_user_command)
 
+    def insert_sale(self, *args):
+        """Method to insert a sales record to the database"""
+
+        author = args[0]
+        name = args[1]
+        quantity = args[2]
+        unit_price = args[3]
+        total = args[4]
+        date = args[5]
+
+        insert_sale_command = """
+        INSERT INTO sales(sale_author, name, quantity, unit_price,\
+        total_price, purchase_date) VALUES (\
+        '{}', '{}', '{}', '{}', '{}', '{}');
+        """.format(author, name, quantity, unit_price, total, date)
+        self.cursor.execute(insert_sale_command)
+
     def query(self, table, column, value):
         """Method to query user by their username"""
 
@@ -102,13 +120,18 @@ class DatabaseConnection:
 
         return rows
 
-    def make_admin(self, status, username):
+    def update(self, *args):
         """Method to make a normal user an admin"""
+        table = args[0]
+        column = args[1]
+        new_status = args[2]
+        cell = args[3]
+        value = args[4]
 
-        make_admin_command = """
-        UPDATE users SET admin='{}' WHERE username='{}';
-        """.format(status, username)
-        self.cursor.execute(make_admin_command)
+        update_command = """
+        UPDATE {} SET {}='{}' WHERE {}='{}';
+        """.format(table, column, new_status, cell, value)
+        self.cursor.execute(update_command)
 
     def drop_table(self, table_name):
         """Method to drop tables"""
