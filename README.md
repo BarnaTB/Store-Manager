@@ -52,6 +52,7 @@ Install pytest, source the .env file, run the tests.
 
 ## Deployment
 
+The application's **static** UI is deployed via [github pages](https://barnatb.github.io/Store-Manager/) and the back-end code is deployed on [heroku](https://store-manag.herokuapp.com/).
 
 ## Tools Used
 
@@ -67,6 +68,7 @@ The project has been built with the following technologies so far:
 * CSS
 * Javascript
 * Python/Flask
+* PostgreSQL
 
 ## Contributions
 
