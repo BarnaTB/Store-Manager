@@ -38,8 +38,9 @@ HTTP Method | Endpoint | Functionality | Parameters | Protected
 POST | /signup | Register an attendant | None | False
 POST | /login | Login into account | None | False
 POST | /products | Create a product | None | True
-GET | /products/int:product_id | Fetch a single product record | product_id | True
+GET | /products/product_id | Fetch a single product record | product_id | True
 GET | /products | Fetch all products | None | False
+PUT | /products/product_id | Modify a product | product_id | True
 POST | /sales | Create a sale order | None | True
 GET | /sales/sale_id | Fetch a single sale record | sale_id | True
 GET | /sales | Fetch all sale records | None | True
@@ -79,3 +80,7 @@ To contibute to the project, create a branch from the **develop** branch and mak
 ## Authors
 
 Barnabas Tumuhairwe B
+
+## Acknowledgements
+
+Kudos to the developers at [Andela](https://andela.com) for their unmatched support during the development of this project.
