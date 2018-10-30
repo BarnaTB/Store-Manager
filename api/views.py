@@ -1,6 +1,6 @@
 from flask import request, jsonify, Blueprint, json
 from api.models import User, Product
-from api.validator import ValidateUser
+from api.validator import ValidateUser, ValidateProduct
 from database.db import DatabaseConnection
 from flask_jwt_extended import (create_access_token,
                                 get_jwt_identity, jwt_required)
@@ -90,3 +90,46 @@ def login():
         'token': token,
         'message': 'Logged in!'
     }), 200
+
+
+@blueprint.route('/products', methods=['POST'])
+@jwt_required
+def add_product():
+    """
+    Function adds a product to the products list.
+    :returns:
+    A success message and the product.
+    """
+    username = get_jwt_identity()
+    user = Product.query('users', 'username', username)
+
+    if user[-1] is False:
+        return jsonify({
+            'message': 'You are not authorized to access this!'
+        }), 503
+    else:
+        data = request.get_json()
+
+        name = data.get('name')
+        quantity = data.get('quantity')
+        unit_price = data.get('unit_price')
+
+        validate_product = ValidateProduct(name, quantity, unit_price)
+        product = Product(name, quantity, unit_price)
+        if validate_product.validate() is False:
+            return jsonify({
+                'message': 'One of the required fields is empty!'
+            }), 400
+        elif not isinstance(unit_price, int) or not isinstance(quantity, int):
+            return jsonify({
+                'message': 'The unit price and quantity must be numbers!'
+            }), 400
+        product_dict = product.insert_product()
+        if not product_dict:
+            return jsonify({
+                'message': 'This product already exists!'
+            }), 400
+        return jsonify({
+            'product': product_dict,
+            'message': 'Product added successfully!'
+        }), 201
