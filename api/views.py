@@ -57,3 +57,36 @@ lowercase and number characcters and must be longer than 5 characters!'
     return jsonify({
         'message': '{} successfully registered!'.format(username)
     }), 201
+
+
+@blueprint.route('/login', methods=['POST'])
+def login():
+    """
+    Function enables user to log into their account.
+    :returns:
+    A token and a success message
+    """
+    data = request.get_json()
+
+    username = data.get('username')
+    password = data.get('password')
+
+    user = ValidateUser(username, False, password)
+
+    if not user.validate_username() or not password or password.isspace():
+        return jsonify({
+            'message': 'One of the required fields is empty!'
+        }), 400
+    elif not Product.query('users', 'username', username):
+        return jsonify({
+            'message': 'Sorry wrong username!'
+        }), 400
+    elif not User.verify_password(username, password):
+        return jsonify({
+            'message': 'Sorry wrong password!'
+        }), 400
+    token = create_access_token(identity=username)
+    return jsonify({
+        'token': token,
+        'message': 'Logged in!'
+    }), 200
