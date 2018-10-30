@@ -1,0 +1,8 @@
+[report]
+
+omit = 
+    */python?.?/*
+    */site-packages/*
+    */home/travis/virtualenv/*
+    */dist-packages/*
+    tests/*
