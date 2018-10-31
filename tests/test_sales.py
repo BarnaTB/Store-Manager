@@ -114,7 +114,7 @@ class TestSale(unittest.TestCase):
         self.assertEqual(reply['message'], 'Sold!')
         self.assertEqual(response.status_code, 201)
 
-    def test_add_answer_with_missing_fields(self):
+    def test_add_sale_with_missing_fields(self):
         """Test that a user cannot make a sale with missing fields"""
         user = dict(
             username='admin',
