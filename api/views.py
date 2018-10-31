@@ -135,7 +135,7 @@ def add_product():
         }), 201
 
 
-@blueprint.route('/products/<int:product_id>')
+@blueprint.route('/products/<product_id>')
 def view_single_product(product_id):
     """
     Function enables store owner or attendant view details of a specific
@@ -146,21 +146,27 @@ def view_single_product(product_id):
     :returns:
     A product that matches the product_id that was entered.
     """
-    if not Product.query_all('products'):
+    try:
+        product_id = int(product_id)
+        if not Product.query_all('products'):
+            return jsonify({
+                'message': 'There are no products yet!'
+            }), 400
+        product = Product.query('products', 'product_id', product_id)
+        if not product:
+            return jsonify({
+                'message': 'This product does not exist!'
+            }), 400
         return jsonify({
-            'message': 'There are no products yet!'
-        }), 404
-    product = Product.query('products', 'product_id', product_id)
-    if not product:
+            'product': {
+                '_id': product[0],
+                'name': product[1],
+                'quantity': product[2],
+                'unit_price': product[3]
+            },
+            'message': 'Product fetched!'
+        }), 200
+    except ValueError:
         return jsonify({
-            'message': 'This product does not exist!'
+            'message': 'The product id should be a number!'
         }), 400
-    return jsonify({
-        'product': {
-            '_id': product[0],
-            'name': product[1],
-            'quantity': product[2],
-            'unit_price': product[3]
-        },
-        'message': 'Product fetched!'
-    }), 200

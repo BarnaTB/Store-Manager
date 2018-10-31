@@ -435,7 +435,71 @@ class TestProduct(unittest.TestCase):
         reply = json.loads(response.data.decode())
 
         self.assertEqual(reply['message'], 'There are no products yet!')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
+
+    def test_view_one_product_with_vague_id(self):
+        """Test that a user cannot view one product with non-integer id"""
+        user = dict(
+            username='admin',
+            email='admin@store.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'admin successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        self.db.update('users', 'admin', 'true', 'username', 'admin')
+
+        user = dict(
+            username='admin',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Logged in!')
+        self.assertEqual(response.status_code, 200)
+        token = reply['token']
+
+        product = dict(
+            name='Sugar',
+            unit_price=1000,
+            quantity=100
+        )
+        response = self.tester.post(
+            '/api/v1/products',
+            content_type='application/json',
+            data=json.dumps(product),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Product added successfully!')
+        self.assertEqual(response.status_code, 201)
+
+        response = self.tester.get(
+            '/api/v1/products/2the'
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'The product id should be a number!')
+        self.assertEqual(response.status_code, 400)
 
     def tearDown(self):
         self.db.drop_table('products')
