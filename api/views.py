@@ -107,22 +107,21 @@ def add_product():
         return jsonify({
             'message': 'You are not authorized to access this!'
         }), 503
-    else:
+    try:
         data = request.get_json()
 
         name = data.get('name')
         quantity = data.get('quantity')
         unit_price = data.get('unit_price')
 
+        quantity = int(quantity)
+        unit_price = int(unit_price)
+
         validate_product = ValidateProduct(name, quantity, unit_price)
         product = Product(name, quantity, unit_price)
         if validate_product.validate() is False:
             return jsonify({
                 'message': 'One of the required fields is empty!'
-            }), 400
-        elif not isinstance(unit_price, int) or not isinstance(quantity, int):
-            return jsonify({
-                'message': 'The unit price and quantity must be numbers!'
             }), 400
         product_dict = product.insert_product()
         if not product_dict:
@@ -133,3 +132,7 @@ def add_product():
             'product': product_dict,
             'message': 'Product added successfully!'
         }), 201
+    except ValueError:
+        return jsonify({
+            'message': 'The unit price and quantity must be numbers!'
+        }), 400
