@@ -192,7 +192,7 @@ def add_sale():
         }), 400
 
 
-@blueprint.route('/sales/<int:sale_id>', methods=['GET'])
+@blueprint.route('/sales/<sale_id>', methods=['GET'])
 @jwt_required
 def view_single_sale(sale_id):
     """
@@ -204,33 +204,38 @@ def view_single_sale(sale_id):
     Details of the sale whose id matches the one entered by the user.
     """
     username = get_jwt_identity()
+    try:
+        sale_id = int(sale_id)
+        sale = Sale.query('sales', 'sales_id', sale_id)
 
-    sale = Sale.query('sales', 'sales_id', sale_id)
+        if not Sale.query_all('sales'):
+            return jsonify({
+                'message': 'No sales yet!'
+            }), 400
+        elif not sale:
+            return jsonify({
+                'message': 'This sale does not exist!'
+            }), 400
+        sale_dict = {
+            'sales_id': sale[0],
+            'sale_author': sale[1],
+            'name': sale[2],
+            'quantity': sale[3],
+            'unit_price': sale[4],
+            'total_price': sale[5],
+            'purchase_date': sale[6]
+        }
+        user = Product.query('users', 'username', username)
 
-    if not Sale.query_all('sales'):
+        if sale_dict['sale_author'] != username and user[-1] is False:
+            return jsonify({
+                'message': 'You are not authorized to access this!'
+            }), 503
         return jsonify({
-            'message': 'No sales yet!'
+            'sale': sale_dict,
+            'message': 'Sale fetched!'
+        }), 200
+    except ValueError:
+        return jsonify({
+            'message': 'The sale id should be a number!'
         }), 400
-    elif not sale:
-        return jsonify({
-            'message': 'This sale does not exist!'
-        }), 400
-    sale_dict = {
-        'sales_id': sale[0],
-        'sale_author': sale[1],
-        'name': sale[2],
-        'quantity': sale[3],
-        'unit_price': sale[4],
-        'total_price': sale[5],
-        'purchase_date': sale[6]
-    }
-    user = Product.query('users', 'username', username)
-
-    if sale_dict['sale_author'] != username and user[-1] is False:
-        return jsonify({
-            'message': 'You are not authorized to access this!'
-        }), 503
-    return jsonify({
-        'sale': sale_dict,
-        'message': 'Sale fetched!'
-    }), 200
