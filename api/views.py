@@ -190,3 +190,28 @@ def add_sale():
         return jsonify({
             'message': 'Quantity should be a number!'
         }), 400
+
+
+@blueprint.route('/sales', methods=['GET'])
+@jwt_required
+def view_all_sales():
+    """
+    Function enables store owner to view all sales records.
+    :returns:
+    A list of all sales made by all store attendants.
+    """
+    username = get_jwt_identity()
+    user = Product.query('users', 'username', username)
+
+    if user[-1] is False:
+        return jsonify({
+            'message': 'You are not authorized to access this!'
+        }), 503
+    elif not Sale.query_all_sales('sales'):
+        return jsonify({
+            'message': 'No sales yet!'
+        }), 400
+    return jsonify({
+        'sales': Sale.query_all_sales('sales'),
+        'message': 'Sales fetched successfully!'
+    }), 200
