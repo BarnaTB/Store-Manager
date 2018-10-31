@@ -600,6 +600,412 @@ class TestSale(unittest.TestCase):
                          'Unfortunately we have less than you require!')
         self.assertEqual(response.status_code, 400)
 
+    def test_view_individual_sale(self):
+        """Test that user can view individual sale record"""
+        user = dict(
+            username='admin',
+            email='admin@store.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'admin successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        self.db.update('users', 'admin', 'true', 'username', 'admin')
+
+        user = dict(
+            username='admin',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Logged in!')
+        self.assertEqual(response.status_code, 200)
+        token = reply['token']
+
+        product = dict(
+            name='sugar',
+            unit_price=1000,
+            quantity=100
+        )
+        response = self.tester.post(
+            '/api/v1/products',
+            content_type='application/json',
+            data=json.dumps(product),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Product added successfully!')
+        self.assertEqual(response.status_code, 201)
+
+        user = dict(
+            username='barna',
+            email='barna@store.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'barna successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        user = dict(
+            username='admin',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        token = reply['token']
+
+        sale = dict(
+            name='sugar',
+            quantity=10
+        )
+
+        response = self.tester.post(
+            '/api/v1/sales',
+            content_type='application/json',
+            data=json.dumps(sale),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Sold!')
+        self.assertEqual(response.status_code, 201)
+
+        response = self.tester.get(
+            '/api/v1/sales/1',
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Sale fetched!')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_single_sale_without_sales(self):
+        """Test that a user cannot view a single sale without any sales"""
+        user = dict(
+            username='barna',
+            email='barna@store.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'barna successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        user = dict(
+            username='barna',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+        self.assertEqual(reply['message'], 'Logged in!')
+        self.assertEqual(response.status_code, 200)
+
+        token = reply['token']
+
+        response = self.tester.get(
+            '/api/v1/sales/1',
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'No sales yet!')
+        self.assertEqual(response.status_code, 400)
+
+    def test_view_single_sale_which_does_not_exist(self):
+        """Test that user cannot sale which does not exist"""
+        user = dict(
+            username='admin',
+            email='admin@store.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'admin successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        self.db.update('users', 'admin', 'true', 'username', 'admin')
+
+        user = dict(
+            username='admin',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Logged in!')
+        self.assertEqual(response.status_code, 200)
+        token = reply['token']
+
+        product = dict(
+            name='sugar',
+            unit_price=1000,
+            quantity=100
+        )
+        response = self.tester.post(
+            '/api/v1/products',
+            content_type='application/json',
+            data=json.dumps(product),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Product added successfully!')
+        self.assertEqual(response.status_code, 201)
+
+        user = dict(
+            username='barna',
+            email='barna@store.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'barna successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        user = dict(
+            username='admin',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        token = reply['token']
+
+        sale = dict(
+            name='sugar',
+            quantity=10
+        )
+
+        response = self.tester.post(
+            '/api/v1/sales',
+            content_type='application/json',
+            data=json.dumps(sale),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Sold!')
+        self.assertEqual(response.status_code, 201)
+
+        response = self.tester.get(
+            '/api/v1/sales/2',
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'This sale does not exist!')
+        self.assertEqual(response.status_code, 400)
+
+    def test_attendant_gets_sale_which_does_not_belong_to_them(self):
+        """Test that an attendant cannot get another's sales record"""
+        user = dict(
+            username='admin',
+            email='admin@store.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'admin successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        self.db.update('users', 'admin', 'true', 'username', 'admin')
+
+        user = dict(
+            username='admin',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Logged in!')
+        self.assertEqual(response.status_code, 200)
+        token = reply['token']
+
+        product = dict(
+            name='sugar',
+            unit_price=1000,
+            quantity=100
+        )
+        response = self.tester.post(
+            '/api/v1/products',
+            content_type='application/json',
+            data=json.dumps(product),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Product added successfully!')
+        self.assertEqual(response.status_code, 201)
+
+        user = dict(
+            username='admin',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        token = reply['token']
+
+        sale = dict(
+            name='sugar',
+            quantity=10
+        )
+
+        response = self.tester.post(
+            '/api/v1/sales',
+            content_type='application/json',
+            data=json.dumps(sale),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Sold!')
+        self.assertEqual(response.status_code, 201)
+
+        user = dict(
+            username='barna',
+            email='barna@store.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'barna successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        user = dict(
+            username='barna',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+        self.assertEqual(reply['message'], 'Logged in!')
+        self.assertEqual(response.status_code, 200)
+
+        token = reply['token']
+
+        response = self.tester.get(
+            '/api/v1/sales/1',
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'],
+                         'You are not authorized to access this!')
+        self.assertEqual(response.status_code, 503)
+
     def tearDown(self):
         self.db.drop_table('products')
         self.db.drop_table('users')
