@@ -3,15 +3,19 @@ from api import app
 from flask import json
 from api.models import Product
 from database.db import DatabaseConnection
+from base_test import BaseTest
 
 
-class TestProduct(unittest.TestCase):
+class TestProduct(BaseTest):
     def setUp(self):
         self.tester = app.test_client(self)
         self.db = DatabaseConnection()
 
     def test_add_product_not_admin(self):
         """Test non-admin users cannot access add a product"""
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@mail.com',
@@ -21,7 +25,8 @@ class TestProduct(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -100,6 +105,43 @@ class TestProduct(unittest.TestCase):
         self.assertEqual(reply['message'], 'Product added successfully!')
         self.assertEqual(response.status_code, 201)
 
+    def test_admin_add_product_with_punctutations(self):
+        """Test that a user cannot add a product with only punctuation marks"""
+        user = dict(
+            username='admin',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Logged in!')
+        self.assertEqual(response.status_code, 200)
+        token = reply['token']
+
+        product = dict(
+            name=';',
+            unit_price=1000,
+            quantity=100
+        )
+        response = self.tester.post(
+            '/api/v1/products',
+            content_type='application/json',
+            data=json.dumps(product),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'One of the required fields is empty or \
+contains invalid characters!')
+        self.assertEqual(response.status_code, 400)
+
     def test_add_product_missing_fields(self):
         """Test that empty fields are not accepted"""
         user = dict(
@@ -134,7 +176,8 @@ class TestProduct(unittest.TestCase):
         reply = json.loads(response.data.decode())
 
         self.assertEqual(reply['message'],
-                         'One of the required fields is empty!')
+                         'One of the required fields is empty or \
+contains invalid characters!')
         self.assertEqual(response.status_code, 400)
 
     def test_unit_price_must_be_number(self):
@@ -438,6 +481,9 @@ class TestProduct(unittest.TestCase):
 
     def test_view_single_product_from_empty_list(self):
         """Test that a user cannot view a product from an empty list"""
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@mail.com',
@@ -447,7 +493,8 @@ class TestProduct(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -760,6 +807,9 @@ numbers!')
 
     def test_user_update_product_unauthorized(self):
         """Test attendant cannot update product"""
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@mail.com',
@@ -769,7 +819,8 @@ numbers!')
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -860,6 +911,9 @@ numbers!')
 
     def test_delete_product_attendant(self):
         """Test attendant should not be able to delete a product"""
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@mail.com',
@@ -869,7 +923,8 @@ numbers!')
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())

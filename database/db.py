@@ -38,8 +38,8 @@ class DatabaseConnection:
             self.cursor.execute(
                 """
                 CREATE TABLE IF NOT EXISTS products (
-                    product_id SERIAL,
-                    name TEXT NOT NULL PRIMARY KEY,
+                    product_id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
                     quantity INTEGER NOT NULL,
                     unit_price INTEGER NOT NULL
                     );

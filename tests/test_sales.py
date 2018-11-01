@@ -3,9 +3,10 @@ from api import app
 from flask import json
 from api.models import Sale
 from database.db import DatabaseConnection
+from base_test import BaseTest
 
 
-class TestSale(unittest.TestCase):
+class TestSale(BaseTest):
     def setUp(self):
         self.tester = app.test_client(self)
         self.db = DatabaseConnection()
@@ -46,6 +47,9 @@ class TestSale(unittest.TestCase):
         self.assertEqual(reply['message'], 'Product added successfully!')
         self.assertEqual(response.status_code, 201)
 
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@store.com',
@@ -55,7 +59,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -131,6 +136,9 @@ class TestSale(unittest.TestCase):
         self.assertEqual(reply['message'], 'Product added successfully!')
         self.assertEqual(response.status_code, 201)
 
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@store.com',
@@ -140,7 +148,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -217,6 +226,9 @@ class TestSale(unittest.TestCase):
         self.assertEqual(reply['message'], 'Product added successfully!')
         self.assertEqual(response.status_code, 201)
 
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@store.com',
@@ -226,7 +238,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -268,6 +281,9 @@ class TestSale(unittest.TestCase):
 
     def test_sell_a_product_which_does_not_exist(self):
         """Test that attendant cannot sell non-existent product"""
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@store.com',
@@ -277,7 +293,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -353,6 +370,9 @@ class TestSale(unittest.TestCase):
         self.assertEqual(reply['message'], 'Product added successfully!')
         self.assertEqual(response.status_code, 201)
 
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@store.com',
@@ -362,7 +382,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -455,6 +476,9 @@ class TestSale(unittest.TestCase):
         self.assertEqual(reply['message'], 'Product added successfully!')
         self.assertEqual(response.status_code, 201)
 
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@store.com',
@@ -464,7 +488,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -541,6 +566,9 @@ class TestSale(unittest.TestCase):
         self.assertEqual(reply['message'], 'Product added successfully!')
         self.assertEqual(response.status_code, 201)
 
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@store.com',
@@ -550,7 +578,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -667,6 +696,9 @@ class TestSale(unittest.TestCase):
 
         self.assertEqual(reply['message'], 'Sold!')
         self.assertEqual(response.status_code, 201)
+        
+        reply = self.login_user()
+        token = reply['token']
 
         user = dict(
             username='barna',
@@ -677,7 +709,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -749,6 +782,9 @@ class TestSale(unittest.TestCase):
         self.assertEqual(reply['message'], 'Product added successfully!')
         self.assertEqual(response.status_code, 201)
 
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@store.com',
@@ -758,7 +794,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -827,6 +864,9 @@ class TestSale(unittest.TestCase):
         self.assertEqual(reply['message'], 'Product added successfully!')
         self.assertEqual(response.status_code, 201)
 
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@store.com',
@@ -836,7 +876,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -888,6 +929,9 @@ class TestSale(unittest.TestCase):
 
     def test_view_single_sale_without_sales(self):
         """Test that a user cannot view a single sale without any sales"""
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@store.com',
@@ -897,7 +941,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -968,6 +1013,9 @@ class TestSale(unittest.TestCase):
         self.assertEqual(reply['message'], 'Product added successfully!')
         self.assertEqual(response.status_code, 201)
 
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@store.com',
@@ -977,7 +1025,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -1095,6 +1144,9 @@ class TestSale(unittest.TestCase):
         self.assertEqual(reply['message'], 'Sold!')
         self.assertEqual(response.status_code, 201)
 
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@store.com',
@@ -1104,7 +1156,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())
@@ -1176,6 +1229,9 @@ class TestSale(unittest.TestCase):
         self.assertEqual(reply['message'], 'Product added successfully!')
         self.assertEqual(response.status_code, 201)
 
+        reply = self.login_user()
+        token = reply['token']
+
         user = dict(
             username='barna',
             email='barna@store.com',
@@ -1185,7 +1241,8 @@ class TestSale(unittest.TestCase):
         response = self.tester.post(
             '/api/v1/signup',
             content_type='application/json',
-            data=json.dumps(user)
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
 
         reply = json.loads(response.data.decode())

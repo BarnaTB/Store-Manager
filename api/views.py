@@ -15,6 +15,7 @@ blueprint = Blueprint('application', __name__)
 
 @blueprint.route('/signup', methods=['POST'])
 @swag_from('docs/signup.yml')
+@jwt_required
 def signup():
     """
     Function enables user to create an account on the platform.
@@ -23,6 +24,13 @@ def signup():
 
     A success message upon successful registeration
     """
+    username = get_jwt_identity()
+    user = Product.query('users', 'username', username)
+
+    if user[-1] is False:
+        return jsonify({
+            'message': 'You are not authorized to access this!'
+        }), 503
     try:
         data = request.get_json()
 
@@ -139,7 +147,8 @@ def add_product():
         product = Product(name, quantity, unit_price)
         if validate_product.validate() is False:
             return jsonify({
-                'message': 'One of the required fields is empty!'
+                'message': 'One of the required fields is empty or \
+contains invalid characters!'
             }), 400
         product_dict = product.insert_product()
         if not product_dict:
