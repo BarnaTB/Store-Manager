@@ -190,3 +190,7 @@ def add_sale():
         return jsonify({
             'message': 'Quantity should be a number!'
         }), 400
+    except Exception:
+        return jsonify({
+            'message': 'Something went wrong with your inputs!'
+        }), 400
