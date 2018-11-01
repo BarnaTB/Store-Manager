@@ -136,6 +136,10 @@ def add_product():
         return jsonify({
             'message': 'The unit price and quantity must be numbers!'
         }), 400
+    except Exception:
+        return jsonify({
+            'message': 'Something went wrong with your inputs!'
+        }), 400
 
 
 @blueprint.route('/sales', methods=['POST'])
