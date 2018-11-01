@@ -68,25 +68,6 @@ class TestProduct(unittest.TestCase):
         """Test that admin user can add a product"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -121,25 +102,6 @@ class TestProduct(unittest.TestCase):
 
     def test_add_product_missing_fields(self):
         """Test that empty fields are not accepted"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -179,25 +141,6 @@ class TestProduct(unittest.TestCase):
         """Test that a unit price is strictly a number"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -233,25 +176,6 @@ class TestProduct(unittest.TestCase):
 
     def test_product_already_exists(self):
         """Test that a user cannot add a product which already exists"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -302,25 +226,6 @@ class TestProduct(unittest.TestCase):
         """Test that a user can view all products in the store"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -367,23 +272,6 @@ class TestProduct(unittest.TestCase):
         """Test that a user cannot view products from an empty list"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -411,25 +299,6 @@ class TestProduct(unittest.TestCase):
 
     def test_view_one_product(self):
         """Test that user can view a single product"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -478,25 +347,6 @@ class TestProduct(unittest.TestCase):
         """Test that a user cannot view an object which does not exist"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -541,25 +391,6 @@ class TestProduct(unittest.TestCase):
 
     def test_view_one_product_with_vague_id(self):
         """Test that a user cannot view one product with non-integer id"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -656,25 +487,6 @@ class TestProduct(unittest.TestCase):
         """Test that a product can be updated successfully"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -727,25 +539,6 @@ class TestProduct(unittest.TestCase):
 
     def test_update_product_id_with_vague_ids(self):
         """Test that a user cannot update a product with non-integer ids"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -804,25 +597,6 @@ class TestProduct(unittest.TestCase):
         """Test admin cannot update product with empty spaces"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -876,25 +650,6 @@ class TestProduct(unittest.TestCase):
 
     def test_update_with_words_for_quantity(self):
         """Test user cannot update quantity with words"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -951,25 +706,6 @@ numbers!')
 
     def test_update_product_which_does_not_exist(self):
         """Test that admin cannot a product which does not exist"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -1080,25 +816,6 @@ numbers!')
         """Test admin can delete a product"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -1192,25 +909,6 @@ numbers!')
         """Test that a user cannot delete a product if there aren't any"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -1239,25 +937,6 @@ numbers!')
 
     def test_delete_product_which_does_not_exist(self):
         """Test that user cannot delete a product which does not exist"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -1304,25 +983,6 @@ numbers!')
 
     def test_delete_product_with_vague_id(self):
         """Test that user cannot delete a product with non-integer id"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
