@@ -14,25 +14,6 @@ class TestSale(unittest.TestCase):
         """Test that a sales record can be added by attendant"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -116,25 +97,6 @@ class TestSale(unittest.TestCase):
 
     def test_add_sale_with_missing_fields(self):
         """Test that a user cannot make a sale with missing fields"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -221,25 +183,6 @@ class TestSale(unittest.TestCase):
 
     def test_user_cannot_add_sale_with_non_digits(self):
         """Test that a user cannot add a sale with non digits"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -378,25 +321,6 @@ class TestSale(unittest.TestCase):
         """Test that a user cannot sell a product which is out of stock"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -499,25 +423,6 @@ class TestSale(unittest.TestCase):
         """Test that attendant cannot sell more than the stock"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -602,25 +507,6 @@ class TestSale(unittest.TestCase):
 
     def test_view_sales(self):
         """Test that a user can view all sales records"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -716,25 +602,6 @@ class TestSale(unittest.TestCase):
 
     def test_attendant_view_sales(self):
         """Test that attendant cannot view all sales records"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -850,25 +717,6 @@ class TestSale(unittest.TestCase):
         """Test that a user cannot view sales if there are not any"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -945,25 +793,6 @@ class TestSale(unittest.TestCase):
 
     def test_view_individual_sale(self):
         """Test that user can view individual sale record"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -1107,25 +936,6 @@ class TestSale(unittest.TestCase):
         """Test that user cannot sale which does not exist"""
         user = dict(
             username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
-        user = dict(
-            username='admin',
             password='Pass1234'
         )
 
@@ -1219,25 +1029,6 @@ class TestSale(unittest.TestCase):
 
     def test_attendant_gets_sale_which_does_not_belong_to_them(self):
         """Test that an attendant cannot get another's sales record"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
@@ -1351,25 +1142,6 @@ class TestSale(unittest.TestCase):
 
     def test_view_individual_sale_with_vague_id(self):
         """Test that user can view individual sale record"""
-        user = dict(
-            username='admin',
-            email='admin@store.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'admin successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        self.db.update('users', 'admin', 'true', 'username', 'admin')
-
         user = dict(
             username='admin',
             password='Pass1234'
