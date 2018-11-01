@@ -696,6 +696,9 @@ class TestSale(BaseTest):
 
         self.assertEqual(reply['message'], 'Sold!')
         self.assertEqual(response.status_code, 201)
+        
+        reply = self.login_user()
+        token = reply['token']
 
         reply = self.login_user()
         token = reply['token']
