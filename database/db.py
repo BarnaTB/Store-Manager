@@ -143,6 +143,14 @@ class DatabaseConnection:
         """.format(name, quantity, unit_price, product_id)
         self.cursor.execute(update_many_command)
 
+    def delete(self, table, column, value):
+        """Method to delete a row from the database"""
+
+        delete_command = """
+        DELETE FROM {} WHERE {}='{}';
+        """.format(table, column, value)
+        self.cursor.execute(delete_command)
+
     def drop_table(self, table_name):
         """Method to drop tables"""
         drop_table_command = """

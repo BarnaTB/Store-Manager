@@ -5,6 +5,7 @@ from database.db import DatabaseConnection
 from flask_jwt_extended import (create_access_token,
                                 get_jwt_identity, jwt_required)
 import datetime
+from flasgger import swag_from
 
 db = DatabaseConnection()
 
@@ -13,6 +14,7 @@ blueprint = Blueprint('application', __name__)
 
 
 @blueprint.route('/signup', methods=['POST'])
+@swag_from('docs/signup.yml')
 def signup():
     """
     Function enables user to create an account on the platform.
@@ -62,6 +64,7 @@ lowercase and number characcters and must be longer than 5 characters!'
 
 
 @blueprint.route('/login', methods=['POST'])
+@swag_from('docs/login.yml')
 def login():
     """
     Function enables user to log into their account.
@@ -113,22 +116,20 @@ def add_product():
         return jsonify({
             'message': 'You are not authorized to access this!'
         }), 503
-    else:
+    try:
         data = request.get_json()
 
         name = data.get('name')
         quantity = data.get('quantity')
         unit_price = data.get('unit_price')
+        quantity = int(quantity)
+        unit_price = int(unit_price)
 
         validate_product = ValidateProduct(name, quantity, unit_price)
         product = Product(name, quantity, unit_price)
         if validate_product.validate() is False:
             return jsonify({
                 'message': 'One of the required fields is empty!'
-            }), 400
-        elif not isinstance(unit_price, int) or not isinstance(quantity, int):
-            return jsonify({
-                'message': 'The unit price and quantity must be numbers!'
             }), 400
         product_dict = product.insert_product()
         if not product_dict:
@@ -139,9 +140,14 @@ def add_product():
             'product': product_dict,
             'message': 'Product added successfully!'
         }), 201
+    except ValueError:
+        return jsonify({
+            'message': 'The unit price and quantity must be numbers!'
+        }), 400
 
 
 @blueprint.route('/products', methods=['GET'])
+@jwt_required
 def view_products():
     """
     Function enables store owner or attendant to view all products in the
@@ -160,7 +166,8 @@ def view_products():
     }), 200
 
 
-@blueprint.route('/products/<int:product_id>')
+@blueprint.route('/products/<product_id>', methods=['GET'])
+@jwt_required
 def view_single_product(product_id):
     """
     Function enables store owner or attendant view details of a specific
@@ -175,27 +182,33 @@ def view_single_product(product_id):
 
     A product that matches the product_id that was entered.
     """
-    if not Product.query_all('products'):
+    try:
+        if not Product.query_all('products'):
+            return jsonify({
+                'message': 'There are no products yet!'
+            }), 404
+        product_id = int(product_id)
+        product = Product.query('products', 'product_id', product_id)
+        if not product:
+            return jsonify({
+                'message': 'This product does not exist!'
+            }), 400
         return jsonify({
-            'message': 'There are no products yet!'
-        }), 404
-    product = Product.query('products', 'product_id', product_id)
-    if not product:
+            'product': {
+                '_id': product[0],
+                'name': product[1],
+                'quantity': product[2],
+                'unit_price': product[3]
+            },
+            'message': 'Product fetched!'
+        }), 200
+    except ValueError:
         return jsonify({
-            'message': 'This product does not exist!'
+            'message': 'The product id should be a number!'
         }), 400
-    return jsonify({
-        'product': {
-            '_id': product[0],
-            'name': product[1],
-            'quantity': product[2],
-            'unit_price': product[3]
-        },
-        'message': 'Product fetched!'
-    }), 200
 
 
-@blueprint.route('/products/<int:product_id>', methods=['PUT'])
+@blueprint.route('/products/<product_id>', methods=['PUT'])
 @jwt_required
 def update_product(product_id):
     """
@@ -217,22 +230,19 @@ def update_product(product_id):
         return jsonify({
             'message': 'You are not authorized to access this!'
         }), 503
-    else:
+    try:
         data = request.get_json()
-
         name = data.get('name')
         quantity = data.get('quantity')
         unit_price = data.get('unit_price')
+        unit_price = int(unit_price)
+        quantity = int(quantity)
 
         validate_product = ValidateProduct(name, quantity, unit_price)
         product = Product(name, quantity, unit_price)
         if validate_product.validate() is False:
             return jsonify({
                 'message': 'One of the required fields is empty!'
-            }), 400
-        elif not isinstance(unit_price, int) or not isinstance(quantity, int):
-            return jsonify({
-                'message': 'The unit price and quantity must be numbers!'
             }), 400
         product_dict = product.update_product(product_id)
         if not product_dict:
@@ -243,6 +253,11 @@ def update_product(product_id):
             'product': product_dict,
             'message': 'Product updated!'
         }), 201
+    except ValueError:
+        return jsonify({
+            'message': 'Product id, quantity and unit price should be \
+numbers!'
+        }), 400
 
 
 @blueprint.route('/sales', methods=['POST'])
@@ -257,45 +272,47 @@ def add_sale():
     """
     username = get_jwt_identity()
 
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    name = data.get('name')
-    quantity = data.get('quantity')
+        name = data.get('name')
+        quantity = data.get('quantity')
+        quantity = int(quantity)
 
-    sale = ValidateSale(name, quantity)
+        sale = ValidateSale(name, quantity)
 
-    if not sale.validate():
+        if not sale.validate():
+            return jsonify({
+                'message': 'One of the required fields is empty!'
+            }), 400
+        product = Sale.query('products', 'name', name)
+        if not product:
+            return jsonify({
+                'message': 'This product does not exist!'
+            }), 400
+        elif product[2] <= 0:
+            return jsonify({
+                'message': 'Product is out of stock!'
+            }), 400
+        elif product[2] < quantity:
+            return jsonify({
+                'message': 'Unfortunately we have less than you require!'
+            }), 400
+        total = product[3] * quantity
+        now = datetime.datetime.now()
+        a_sale = Sale(name, quantity, product[3], username, total,
+                      now.strftime('%H:%M:%S on %a, %dth %B %Y'))
+        sale = a_sale.insert_sale()
+        new_quantity = product[2] - quantity
+        a_sale.update('products', 'quantity', new_quantity, 'name', name)
         return jsonify({
-            'message': 'One of the required fields is empty!'
-        }), 400
-    elif not isinstance(quantity, int):
+            'sale': sale,
+            'message': 'Sold!'
+        }), 201
+    except ValueError:
         return jsonify({
             'message': 'Quantity should be a number!'
         }), 400
-    product = Sale.query('products', 'name', name)
-    if not product:
-        return jsonify({
-            'message': 'This product does not exist!'
-        }), 400
-    elif product[2] <= 0:
-        return jsonify({
-            'message': 'Product is out of stock!'
-        }), 400
-    elif product[2] < quantity:
-        return jsonify({
-            'message': 'Unfortunately we have less than you require!'
-        }), 400
-    total = product[3] * quantity
-    now = datetime.datetime.now()
-    a_sale = Sale(name, quantity, product[3], username, total,
-                  now.strftime('%H:%M:%S on %a, %dth %B %Y'))
-    sale = a_sale.insert_sale()
-    new_quantity = product[2] - quantity
-    a_sale.update('products', 'quantity', new_quantity, 'name', name)
-    return jsonify({
-        'sale': sale,
-        'message': 'Sold!'
-    }), 201
 
 
 @blueprint.route('/sales', methods=['GET'])
@@ -325,7 +342,7 @@ def view_all_sales():
     }), 200
 
 
-@blueprint.route('/sales/<int:sale_id>', methods=['GET'])
+@blueprint.route('/sales/<sale_id>', methods=['GET'])
 @jwt_required
 def view_single_sale(sale_id):
     """
@@ -342,32 +359,77 @@ def view_single_sale(sale_id):
     """
     username = get_jwt_identity()
 
-    sale = Sale.query('sales', 'sales_id', sale_id)
+    try:
+        sale_id = int(sale_id)
 
-    if not Sale.query_all('sales'):
+        sale = Sale.query('sales', 'sales_id', sale_id)
+
+        if not Sale.query_all('sales'):
+            return jsonify({
+                'message': 'No sales yet!'
+            }), 400
+        elif not sale:
+            return jsonify({
+                'message': 'This sale does not exist!'
+            }), 400
+        sale_dict = {
+            'sales_id': sale[0],
+            'sale_author': sale[1],
+            'name': sale[2],
+            'quantity': sale[3],
+            'unit_price': sale[4],
+            'total_price': sale[5],
+            'purchase_date': sale[6]
+        }
+        user = Product.query('users', 'username', username)
+
+        if sale_dict['sale_author'] != username and user[-1] is False:
+            return jsonify({
+                'message': 'You are not authorized to access this!'
+            }), 503
         return jsonify({
-            'message': 'No sales yet!'
-        }), 400
-    elif not sale:
+            'sale': sale_dict,
+            'message': 'Sale fetched!'
+        }), 200
+    except ValueError:
         return jsonify({
-            'message': 'This sale does not exist!'
+            'message': 'The sale id should be a number!'
         }), 400
-    sale_dict = {
-        'sales_id': sale[0],
-        'sale_author': sale[1],
-        'name': sale[2],
-        'quantity': sale[3],
-        'unit_price': sale[4],
-        'total_price': sale[5],
-        'purchase_date': sale[6]
-    }
+
+
+@blueprint.route('/products/<product_id>', methods=['DELETE'])
+@jwt_required
+def delete_product(product_id):
+    """
+    Function enables user to delete a product from the database.
+    :params:
+    product_id - holds the integer value for the id of the product to be
+    deleted.
+    :returns:
+    A success message after the product has been deleted.
+    """
+    username = get_jwt_identity()
     user = Product.query('users', 'username', username)
 
-    if sale_dict['sale_author'] != username and user[-1] is False:
+    if user[-1] is False:
         return jsonify({
             'message': 'You are not authorized to access this!'
         }), 503
-    return jsonify({
-        'sale': sale_dict,
-        'message': 'Sale fetched!'
-    }), 200
+    try:
+        product_id = int(product_id)
+        if not Product.query_all('products'):
+            return jsonify({
+                'message': 'There are no products for you to delete!'
+            }), 400
+        elif not Product.query('products', 'product_id', product_id):
+            return jsonify({
+                'message': 'This product does not exist!'
+            }), 400
+        db.delete('products', 'product_id', product_id)
+        return jsonify({
+            'message': 'Product deleted!'
+        }), 200
+    except ValueError:
+        return jsonify({
+            'message': 'The product id should be a number!'
+        }), 400

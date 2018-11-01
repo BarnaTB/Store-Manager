@@ -1,0 +1,23 @@
+Authentication
+---
+tags:
+  - User Authentication
+parameters:
+  - in: body
+    name: body
+    required: true
+    type: string
+    description: Enables a user to login into their account.
+responses:
+  200:
+    schema:
+      properties:
+        username:
+          type: string
+          default: johnDoe
+        password:
+          type: string
+          default: Pass1234
+    description: Logged in!
+  400:
+    description: Failed to login.

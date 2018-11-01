@@ -85,7 +85,7 @@ class Product(object):
         """
 
         product = db.query(table, column, value)
-        if product == [] or product is None:
+        if product is None:
             return False
         return product
 

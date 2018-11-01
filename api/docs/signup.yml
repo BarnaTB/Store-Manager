@@ -1,0 +1,26 @@
+Authentication
+---
+tags:
+  - User Authentication
+parameters:
+  - in: body
+    name: body
+    required: true
+    type: string
+    description: Enables a user to create an account.
+responses:
+  201:
+    description: Successfully registered!
+    schema:
+      properties:
+        username:
+          type: string
+          default: johnDoe
+        email:
+          type: string
+          default: johndoe@example.com
+        password:
+          type: string
+          default: Pass1234
+  400:
+    description: Failed to register!
