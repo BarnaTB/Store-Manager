@@ -1,4 +1,5 @@
 import re
+import string
 
 
 class ValidateSale(object):
@@ -42,10 +43,27 @@ class ValidateProduct(ValidateSale):
         False - if one or all of the product details  are invalid.
         """
         if not self.name or not self.unit_price or not self.quantity or\
-                self.name.isspace():
+                self.name.isspace() or not self.name or \
+                self.validate_punctuation():
             return False
         else:
             return True
+
+    def validate_punctuation(self):
+        """
+        Method to check for punctuation marks in a string.
+
+        :returns:
+
+        True if the string contains punctuation marks
+        """
+        result = ""
+        for character in self.name:
+            if character in string.punctuation:
+                result += character
+        if result:
+            return True
+        return False
 
 
 class ValidateUser:
