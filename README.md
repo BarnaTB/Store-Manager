@@ -39,8 +39,9 @@ POST | /signup | Register an attendant | None | False
 POST | /login | Login into account | None | False
 POST | /products | Create a product | None | True
 GET | /products/product_id | Fetch a single product record | product_id | True
-GET | /products | Fetch all products | None | False
+GET | /products | Fetch all products | None | True
 PUT | /products/product_id | Modify a product | product_id | True
+DELETE | /products/product_id | Delete a product | product_id | True
 POST | /sales | Create a sale order | None | True
 GET | /sales/sale_id | Fetch a single sale record | sale_id | True
 GET | /sales | Fetch all sale records | None | True
