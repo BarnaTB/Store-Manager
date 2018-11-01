@@ -1,5 +1,6 @@
 import psycopg2
 import os
+from passlib.hash import pbkdf2_sha256 as sha256
 
 
 class DatabaseConnection:
@@ -8,12 +9,12 @@ class DatabaseConnection:
     def __init__(self):
         try:
             if os.getenv('APP_SETTINGS') == 'testing':
-                self.db = 'test_db'
+                db = 'test_db'
             else:
-                self.db = 'storemanager_db'
+                db = 'storemanager_db'
 
             self.connection = psycopg2.connect(
-                database=self.db,
+                database=db,
                 user='postgres',
                 password='##password',
                 host='localhost'
@@ -58,8 +59,10 @@ class DatabaseConnection:
                     );
                 """
             )
+            self.insert_admin('admin', 'admin@store.com',
+                              sha256.hash('Pass1234'))
 
-            print('Connected to {}!'.format(self.db))
+            print('Connected to {}!'.format(db))
         except Exception as e:
             print(e)
             print('Failed to connect to database!')
@@ -72,6 +75,18 @@ class DatabaseConnection:
         VALUES('{}', '{}', '{}');
         """.format(name, quantity, unit_price)
         self.cursor.execute(insert_product_command)
+
+    def insert_admin(self, username, email, password):
+        """Method to create an admin user"""
+        row = self.query('users', 'username', username)
+        if row is None:
+            insert_admin_command = """
+            INSERT INTO users(username, email, password, admin) \
+            VALUES('{}', '{}', '{}', 'true');
+            """.format(username, email, password)
+            self.cursor.execute(insert_admin_command)
+            return True
+        return False
 
     def insert_user(self, username, email, password, admin):
         """Method to insert a new user to the database"""
