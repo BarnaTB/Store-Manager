@@ -1119,6 +1119,7 @@ class TestSale(unittest.TestCase):
 
         self.assertEqual(reply['message'], 'The sale id should be a number!')
         self.assertEqual(response.status_code, 400)
+
     def tearDown(self):
         self.db.drop_table('products')
         self.db.drop_table('users')
