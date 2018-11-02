@@ -56,7 +56,8 @@ class TestAuth(BaseTest):
         reply = json.loads(response.data.decode())
 
         self.assertEqual(reply['message'],
-                         'Username cannot be empty or contain numbers!')
+                         'Username cannot be empty and must contain \
+alphabetical characters!')
         self.assertEqual(response.status_code, 400)
 
     def test_registration_with_empty_email_field(self):

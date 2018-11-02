@@ -57,8 +57,8 @@ class Product(object):
                 product_dict = {
                     '_id': product[0],
                     'name': product[1],
-                    'unit_price': product[2],
-                    'quantity': product[3]
+                    'quantity': product[2],
+                    'unit_price': product[3]
                 }
                 Product.products.append(product_dict)
             return Product.products
@@ -159,7 +159,7 @@ class Sale(Product):
 
         return {
             'sale_id': sale[0],
-            'attendant': sale[1],
+            'sale_author': sale[1],
             'name': sale[2],
             'quantity': sale[3],
             'unit_price': sale[4],
@@ -187,7 +187,7 @@ class Sale(Product):
             for sale in sales:
                 sales_dict = {
                     '_id': sale[0],
-                    'attendant': sale[1],
+                    'sale_author': sale[1],
                     'name': sale[2],
                     'quantity': sale[3],
                     'unit_price': sale[4],

@@ -129,3 +129,20 @@ class ValidateUser:
             return False
         else:
             return True
+
+    @staticmethod
+    def validate_punctuation(username):
+        """
+        Method to check for punctuation marks in a string.
+
+        :returns:
+
+        True if the string contains punctuation marks
+        """
+        result = ""
+        for character in username:
+            if character in string.punctuation:
+                result += character
+        if result:
+            return True
+        return False

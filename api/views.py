@@ -40,9 +40,11 @@ def signup():
 
         user = ValidateUser(username, email, password)
 
-        if not user.validate_username():
+        if not user.validate_username() or \
+                ValidateUser.validate_punctuation(username):
             return jsonify({
-                'message': 'Username cannot be empty or contain numbers!'
+                'message': 'Username cannot be empty and must contain \
+alphabetical characters!'
             }), 400
         elif not user.validate_email():
             return jsonify({
@@ -106,7 +108,8 @@ def login():
             return jsonify({
                 'message': 'Sorry wrong password!'
             }), 400
-        token = create_access_token(identity=username)
+        token = create_access_token(
+            identity=username, expires_delta=datetime.timedelta(days=1))
         return jsonify({
             'token': token,
             'message': 'Logged in!'
@@ -264,12 +267,14 @@ def update_product(product_id):
         unit_price = data.get('unit_price')
         unit_price = int(unit_price)
         quantity = int(quantity)
+        product_id = int(product_id)
 
         validate_product = ValidateProduct(name, quantity, unit_price)
         product = Product(name, quantity, unit_price)
         if validate_product.validate() is False:
             return jsonify({
-                'message': 'One of the required fields is empty!'
+                'message': 'One of the required fields is empty or \
+contains invalid characters!'
             }), 400
         product_dict = product.update_product(product_id)
         if not product_dict:

@@ -692,7 +692,8 @@ contains invalid characters!')
         reply = json.loads(response.data.decode())
 
         self.assertEqual(reply['message'],
-                         'One of the required fields is empty!')
+                         'One of the required fields is empty or \
+contains invalid characters!')
         self.assertEqual(response.status_code, 400)
 
     def test_update_with_words_for_quantity(self):
