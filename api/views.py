@@ -155,7 +155,6 @@ def add_product():
                 'message': 'One of the required fields is empty or \
 contains invalid characters!'
             }), 400
-        name = name.lower()
         product_dict = product.insert_product()
         if not product_dict:
             return jsonify({
