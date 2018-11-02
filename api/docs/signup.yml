@@ -1,4 +1,4 @@
-Authentication
+This is used to register a user.
 ---
 tags:
   - User Authentication
@@ -24,3 +24,12 @@ responses:
           default: Pass1234
   400:
     description: Failed to register!
+  401:
+    description: Missing Authorization Header!
+security:
+  - bearerAuth:
+      description: Pass the jwt token e.g Bearer <token>
+      type: http
+      scheme: bearer
+      in: header
+      bearerFormat: JWT

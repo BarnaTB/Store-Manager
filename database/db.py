@@ -14,11 +14,10 @@ class DatabaseConnection:
                 db = 'storemanager_db'
 
             self.connection = psycopg2.connect(
-                database='db6kf224t4p995',
-                user='xpeorndexusxeh',
-                password='2b2775c6cc4e00f879609dd2409078c\
-2f61ba5149ecece21070b5b3636a95c16',
-                host='ec2-54-83-49-109.compute-1.amazonaws.com'
+                database=db,
+                user='postgres',
+                password='##password',
+                host='localhost'
             )
 
             self.cursor = self.connection.cursor()

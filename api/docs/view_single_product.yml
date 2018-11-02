@@ -1,0 +1,24 @@
+This enables a user to view a single product in the store.
+---
+tags:
+    - Products
+parameters:
+    - in: path
+      name: product_id
+      required: true
+      type: integer
+      description: Enter product id.
+responses:
+  200:
+    description: Product fetched!
+  400:
+    description: Product does not exist!
+  404:
+    description: There are no products yet!
+security:
+  - bearerAuth:
+      description: Pass the jwt token e.g Bearer <token>
+      type: http
+      scheme: bearer
+      in: header
+      bearerFormat: JWT

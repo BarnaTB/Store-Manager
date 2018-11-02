@@ -14,8 +14,8 @@ blueprint = Blueprint('application', __name__)
 
 
 @blueprint.route('/signup', methods=['POST'])
-@swag_from('docs/signup.yml')
 @jwt_required
+@swag_from('docs/signup.yml')
 def signup():
     """
     Function enables user to create an account on the platform.
@@ -119,6 +119,7 @@ def login():
 
 @blueprint.route('/products', methods=['POST'])
 @jwt_required
+@swag_from('docs/add_product.yml')
 def add_product():
     """
     Function adds a product to the products list.
@@ -171,6 +172,7 @@ contains invalid characters!'
 
 @blueprint.route('/products', methods=['GET'])
 @jwt_required
+@swag_from('docs/view_products.yml')
 def view_products():
     """
     Function enables store owner or attendant to view all products in the
@@ -191,6 +193,7 @@ def view_products():
 
 @blueprint.route('/products/<product_id>', methods=['GET'])
 @jwt_required
+@swag_from('docs/view_single_product.yml')
 def view_single_product(product_id):
     """
     Function enables store owner or attendant view details of a specific
@@ -233,6 +236,7 @@ def view_single_product(product_id):
 
 @blueprint.route('/products/<product_id>', methods=['PUT'])
 @jwt_required
+@swag_from('docs/update_products.yml')
 def update_product(product_id):
     """
     Function enables admin user to modify the details of a product.
@@ -287,8 +291,48 @@ numbers!'
         }), 400
 
 
+@blueprint.route('/products/<product_id>', methods=['DELETE'])
+@jwt_required
+@swag_from('docs/delete_product.yml')
+def delete_product(product_id):
+    """
+    Function enables user to delete a product from the database.
+    :params:
+    product_id - holds the integer value for the id of the product to be
+    deleted.
+    :returns:
+    A success message after the product has been deleted.
+    """
+    username = get_jwt_identity()
+    user = Product.query('users', 'username', username)
+
+    if user[-1] is False:
+        return jsonify({
+            'message': 'You are not authorized to access this!'
+        }), 503
+    try:
+        product_id = int(product_id)
+        if not Product.query_all('products'):
+            return jsonify({
+                'message': 'There are no products for you to delete!'
+            }), 400
+        elif not Product.query('products', 'product_id', product_id):
+            return jsonify({
+                'message': 'This product does not exist!'
+            }), 400
+        db.delete('products', 'product_id', product_id)
+        return jsonify({
+            'message': 'Product deleted!'
+        }), 200
+    except ValueError:
+        return jsonify({
+            'message': 'The product id should be a number!'
+        }), 400
+
+
 @blueprint.route('/sales', methods=['POST'])
 @jwt_required
+@swag_from('docs/add_sale.yml')
 def add_sale():
     """
     Function enables store attendant to create a sale.
@@ -348,6 +392,7 @@ def add_sale():
 
 @blueprint.route('/sales', methods=['GET'])
 @jwt_required
+@swag_from('docs/view_sales.yml')
 def view_all_sales():
     """
     Function enables store owner to view all sales records.
@@ -375,6 +420,7 @@ def view_all_sales():
 
 @blueprint.route('/sales/<sale_id>', methods=['GET'])
 @jwt_required
+@swag_from('docs/view_single_sale.yml')
 def view_single_sale(sale_id):
     """
     Function enables store owner and attendant to be able to view a single
@@ -425,42 +471,4 @@ def view_single_sale(sale_id):
     except ValueError:
         return jsonify({
             'message': 'The sale id should be a number!'
-        }), 400
-
-
-@blueprint.route('/products/<product_id>', methods=['DELETE'])
-@jwt_required
-def delete_product(product_id):
-    """
-    Function enables user to delete a product from the database.
-    :params:
-    product_id - holds the integer value for the id of the product to be
-    deleted.
-    :returns:
-    A success message after the product has been deleted.
-    """
-    username = get_jwt_identity()
-    user = Product.query('users', 'username', username)
-
-    if user[-1] is False:
-        return jsonify({
-            'message': 'You are not authorized to access this!'
-        }), 503
-    try:
-        product_id = int(product_id)
-        if not Product.query_all('products'):
-            return jsonify({
-                'message': 'There are no products for you to delete!'
-            }), 400
-        elif not Product.query('products', 'product_id', product_id):
-            return jsonify({
-                'message': 'This product does not exist!'
-            }), 400
-        db.delete('products', 'product_id', product_id)
-        return jsonify({
-            'message': 'Product deleted!'
-        }), 200
-    except ValueError:
-        return jsonify({
-            'message': 'The product id should be a number!'
         }), 400

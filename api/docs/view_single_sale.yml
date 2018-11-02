@@ -1,0 +1,26 @@
+This enables a user to view a single sale in the store.
+---
+tags:
+    - Sales
+parameters:
+    - in: path
+      name: product_id
+      required: true
+      type: integer
+      description: Enter sale id.
+responses:
+  200:
+    description: Sale fetched!
+  400:
+    description: Sale does not exist!
+  404:
+    description: There are no sales yet!
+  503:
+    description: You are not authorized to access this!
+security:
+  - bearerAuth:
+      description: Pass the jwt token e.g Bearer <token>
+      type: http
+      scheme: bearer
+      in: header
+      bearerFormat: JWT

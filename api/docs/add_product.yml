@@ -1,0 +1,37 @@
+This is used to post a product.
+---
+tags:
+  - Products
+parameters:
+  - in: body
+    name: body
+    required: true
+    type: string
+    description: This enables a user to add a product to the store.
+responses:
+  201:
+    description: Product created successfully!
+    schema:
+      properties:
+        name:
+          type: string
+          default: sugar
+        quantity:
+          type: integer
+          default: 100
+        unit_price:
+          type: integer
+          default: 2100
+  400:
+    description: Failed to create item!
+  401:
+    description: Missing Authorization Header!
+  503:
+    description: You are not authorized to access this!
+security:
+  - bearerAuth:
+      description: Pass the jwt token e.g Bearer <token>
+      type: http
+      scheme: bearer
+      in: header
+      bearerFormat: JWT
