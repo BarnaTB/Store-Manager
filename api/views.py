@@ -108,8 +108,9 @@ def login():
             return jsonify({
                 'message': 'Sorry wrong password!'
             }), 400
+        expiry = datetime.timedelta(days=1)
         token = create_access_token(
-            identity=username, expires_delta=datetime.timedelta(days=1))
+            identity=username, expires_delta=expiry)
         return jsonify({
             'token': token,
             'message': 'Logged in!'
@@ -154,6 +155,7 @@ def add_product():
                 'message': 'One of the required fields is empty or \
 contains invalid characters!'
             }), 400
+        name = name.lower()
         product_dict = product.insert_product()
         if not product_dict:
             return jsonify({

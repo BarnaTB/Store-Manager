@@ -11,7 +11,6 @@ class TestAuth(BaseTest):
     def setUp(self):
         self.tester = app.test_client(self)
         self.db = DatabaseConnection()
-        self.base = BaseTest()
 
     def test_successful_registration(self):
         """Test that a user can register successfully"""
