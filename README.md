@@ -37,6 +37,7 @@ HTTP Method | Endpoint | Functionality | Parameters | Protected
 ----------- | -------- | ------------- | ---------- | ---------
 POST | /signup | Register an attendant | None | True
 POST | /login | Login into account | None | False
+PUT | /admin/user_id | Promote user | user_id | True
 POST | /products | Create a product | None | True
 GET | /products/product_id | Fetch a single product record | product_id | True
 GET | /products | Fetch all products | None | True
