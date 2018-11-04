@@ -1,0 +1,16 @@
+This enables a user to view all products in the store.
+---
+tags:
+    - Products
+responses:
+  200:
+    description: Product fetched!.
+  400:
+    description: There are not products yet!
+security:
+  - bearerAuth:
+      description: Pass the jwt token e.g Bearer <token>
+      type: http
+      scheme: bearer
+      in: header
+      bearerFormat: JWT

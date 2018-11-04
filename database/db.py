@@ -1,0 +1,175 @@
+import psycopg2
+import os
+from passlib.hash import pbkdf2_sha256 as sha256
+
+
+class DatabaseConnection:
+    """Class handles database queries and connection"""
+
+    def __init__(self):
+        try:
+            if os.getenv('APP_SETTINGS') == 'testing':
+                db = 'test_db'
+            else:
+                db = 'storemanager_db'
+
+            self.connection = psycopg2.connect(
+                database='db6kf224t4p995',
+                user='xpeorndexusxeh',
+                password='2b2775c6cc4e00f879609dd2409078c2f61ba\
+5149ecece21070b5b3636a95c16',
+                host='ec2-54-83-49-109.compute-1.amazonaws.com'
+            )
+
+            self.cursor = self.connection.cursor()
+            self.connection.autocommit = True
+
+            self.cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS users (
+                    user_id SERIAL PRIMARY KEY,
+                    username TEXT NOT NULL,
+                    email TEXT NOT NULL,
+                    password TEXT NOT NULL,
+                    admin BOOL DEFAULT FALSE
+                    );
+                """
+            )
+
+            self.cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS products (
+                    product_id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    quantity INTEGER NOT NULL,
+                    unit_price INTEGER NOT NULL
+                    );
+                """
+            )
+
+            self.cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS sales (
+                    sales_id SERIAL PRIMARY KEY,
+                    sale_author TEXT NOT NULL,
+                    name TEXT NOT NULL,
+                    quantity INTEGER NOT NULL,
+                    unit_price INTEGER NOT NULL,
+                    total_price INTEGER NOT NULL,
+                    purchase_date TEXT NOT NULL
+                    );
+                """
+            )
+            self.insert_admin('admin', 'admin@store.com',
+                              sha256.hash('Pass1234'))
+
+            print('Connected to {}!'.format(db))
+        except Exception as e:
+            print(e)
+            print('Failed to connect to database!')
+
+    def insert_product(self, name, quantity, unit_price):
+        """SQL query to add a product to the database"""
+
+        insert_product_command = """
+        INSERT INTO products(name, quantity, unit_price)\
+        VALUES('{}', '{}', '{}');
+        """.format(name, quantity, unit_price)
+        self.cursor.execute(insert_product_command)
+
+    def insert_admin(self, username, email, password):
+        """Method to create an admin user"""
+        row = self.query('users', 'username', username)
+        if row is None:
+            insert_admin_command = """
+            INSERT INTO users(username, email, password, admin) \
+            VALUES('{}', '{}', '{}', 'true');
+            """.format(username, email, password)
+            self.cursor.execute(insert_admin_command)
+            return True
+        return False
+
+    def insert_user(self, username, email, password, admin):
+        """Method to insert a new user to the database"""
+
+        insert_user_command = """
+        INSERT INTO users(username, email, password, admin)\
+        VALUES ('{}', '{}', '{}', '{}');
+        """.format(username, email, password, admin)
+        self.cursor.execute(insert_user_command)
+
+    def insert_sale(self, *args):
+        """Method to insert a sales record to the database"""
+
+        author = args[0]
+        name = args[1]
+        quantity = args[2]
+        unit_price = args[3]
+        total = args[4]
+        date = args[5]
+
+        insert_sale_command = """
+        INSERT INTO sales(sale_author, name, quantity, unit_price,\
+        total_price, purchase_date) VALUES (\
+        '{}', '{}', '{}', '{}', '{}', '{}');
+        """.format(author, name, quantity, unit_price, total, date)
+        self.cursor.execute(insert_sale_command)
+
+    def query(self, table, column, value):
+        """Method to query user by their username"""
+
+        query_user_command = """
+        SELECT * FROM {} WHERE {}='{}';
+        """.format(table, column, value)
+        self.cursor.execute(query_user_command)
+        row = self.cursor.fetchone()
+
+        return row
+
+    def query_all(self, table):
+        """Method enables user to retrieve all rows in a table"""
+
+        query_command = """
+        SELECT * FROM {};
+        """.format(table)
+        self.cursor.execute(query_command)
+        rows = self.cursor.fetchall()
+
+        return rows
+
+    def update(self, *args):
+        """Method to make a normal user an admin"""
+        table = args[0]
+        column = args[1]
+        new_status = args[2]
+        cell = args[3]
+        value = args[4]
+
+        update_command = """
+        UPDATE {} SET {}='{}' WHERE {}='{}';
+        """.format(table, column, new_status, cell, value)
+        self.cursor.execute(update_command)
+
+    def update_many(self, name, quantity, unit_price, product_id):
+        """Method to make update multiple columns"""
+
+        update_many_command = """
+        UPDATE products SET name='{}', quantity='{}', unit_price='{}'\
+        WHERE product_id='{}';
+        """.format(name, quantity, unit_price, product_id)
+        self.cursor.execute(update_many_command)
+
+    def delete(self, table, column, value):
+        """Method to delete a row from the database"""
+
+        delete_command = """
+        DELETE FROM {} WHERE {}='{}';
+        """.format(table, column, value)
+        self.cursor.execute(delete_command)
+
+    def drop_table(self, table_name):
+        """Method to drop tables"""
+        drop_table_command = """
+        DROP TABLE {};
+        """.format(table_name)
+        self.cursor.execute(drop_table_command)

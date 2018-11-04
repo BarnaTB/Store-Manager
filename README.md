@@ -1,6 +1,6 @@
 # Store-Manager
 
-[![Build Status](https://travis-ci.org/BarnaTB/Store-Manager.svg?branch=ft-api-database)](https://travis-ci.org/BarnaTB/Store-Manager) [![Coverage Status](https://coveralls.io/repos/github/BarnaTB/Store-Manager/badge.svg?branch=ft-api-database)](https://coveralls.io/github/BarnaTB/Store-Manager?branch=ft-api-database) [![codecov](https://codecov.io/gh/BarnaTB/Store-Manager/branch/ft-api/graph/badge.svg)](https://codecov.io/gh/BarnaTB/Store-Manager) [![Maintainability](https://api.codeclimate.com/v1/badges/2a139d2008a480d3f1c9/maintainability)](https://codeclimate.com/github/BarnaTB/Store-Manager/maintainability) [![Build status](https://ci.appveyor.com/api/projects/status/jiis6u165xnh0xq6/branch/ft-api-database?svg=true)](https://ci.appveyor.com/project/BarnaTB/store-manager/branch/ft-api)
+[![Build Status](https://travis-ci.org/BarnaTB/Store-Manager.svg?branch=ft-api-database)](https://travis-ci.org/BarnaTB/Store-Manager) [![Coverage Status](https://coveralls.io/repos/github/BarnaTB/Store-Manager/badge.svg?branch=ft-api-database)](https://coveralls.io/github/BarnaTB/Store-Manager?branch=ft-api-database) [![codecov](https://codecov.io/gh/BarnaTB/Store-Manager/branch/ft-api-database/graph/badge.svg)](https://codecov.io/gh/BarnaTB/Store-Manager) [![Maintainability](https://api.codeclimate.com/v1/badges/2a139d2008a480d3f1c9/maintainability)](https://codeclimate.com/github/BarnaTB/Store-Manager/maintainability) [![Build status](https://ci.appveyor.com/api/projects/status/jiis6u165xnh0xq6/branch/ft-api-database?svg=true)](https://ci.appveyor.com/project/BarnaTB/store-manager/branch/ft-api)
 
 This is a web application that helps store owners manage sales and product inventory records. This application is meant for use in a single store.
 
@@ -39,8 +39,9 @@ POST | /signup | Register an attendant | None | False
 POST | /login | Login into account | None | False
 POST | /products | Create a product | None | True
 GET | /products/product_id | Fetch a single product record | product_id | True
-GET | /products | Fetch all products | None | False
+GET | /products | Fetch all products | None | True
 PUT | /products/product_id | Modify a product | product_id | True
+DELETE | /products/product_id | Delete a product | product_id | True
 POST | /sales | Create a sale order | None | True
 GET | /sales/sale_id | Fetch a single sale record | sale_id | True
 GET | /sales | Fetch all sale records | None | True
@@ -55,7 +56,7 @@ Install pytest, source the .env file, run the tests.
 
 ## Deployment
 
-The application's **static** UI is deployed via [github pages](https://barnatb.github.io/Store-Manager/) and the back-end code is deployed on [heroku](https://store-manag.herokuapp.com/).
+The application's **static** UI is deployed via [github pages](https://barnatb.github.io/Store-Manager/) and the back-end code is deployed on [heroku](https://store-manag.herokuapp.com/apidocs).
 
 ## Tools Used
 
