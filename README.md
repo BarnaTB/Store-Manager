@@ -35,7 +35,7 @@ The UI pages do not need much to be viewed as any web browser can view them from
 ## Endpoints
 HTTP Method | Endpoint | Functionality | Parameters | Protected
 ----------- | -------- | ------------- | ---------- | ---------
-POST | /signup | Register an attendant | None | False
+POST | /signup | Register an attendant | None | True
 POST | /login | Login into account | None | False
 POST | /products | Create a product | None | True
 GET | /products/product_id | Fetch a single product record | product_id | True
