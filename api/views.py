@@ -121,6 +121,44 @@ def login():
         }), 400
 
 
+@blueprint.route('/admin/<user_id>', methods=['PUT'])
+@jwt_required
+def make_admin(user_id):
+    """
+    Function enables user to promote an existent user to admin
+
+    :returns:
+
+    Success message after successful update
+    """
+    username = get_jwt_identity()
+    user = Product.query('users', 'username', username)
+
+    if user[-1] is False:
+        return jsonify({
+            'message': 'You are not authorized to access this!'
+        }), 503
+    try:
+        user = Product.query('users', 'user_id', user_id)
+
+        if not user:
+            return jsonify({
+                'message': 'This user does not exist!'
+            }), 400
+        elif user[-1] is True:
+            return jsonify({
+                'message': 'This user is already admin!'
+            }), 400
+        Product.update('users', 'admin', 'true', 'user_id', user_id)
+        return jsonify({
+            'message': '{} has been promoted!'.format(user[1])
+        }), 201
+    except ValueError:
+        return jsonify({
+            'message': 'The user id should be a number!'
+        }), 400
+
+
 @blueprint.route('/products', methods=['POST'])
 @jwt_required
 @swag_from('docs/add_product.yml')

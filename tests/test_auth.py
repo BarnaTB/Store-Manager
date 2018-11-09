@@ -348,5 +348,122 @@ lowercase and number characcters and must be longer than 5 characters!')
         self.assertEqual(reply['message'], 'Sorry wrong password!')
         self.assertEqual(response.status_code, 400)
 
+    def test_admin_promote_user(self):
+        """Test that a admin can promote another user to admin"""
+        reply = self.login_user()
+        token = reply['token']
+        user = dict(
+            username='barna',
+            email='barna@mail.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'barna successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        response = self.tester.put(
+            '/api/v1/admin/2',
+            content_type='application/json',
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'barna has been promoted!')
+        self.assertEqual(response.status_code, 201)
+
+    def test_admin_cannot_promote_admin(self):
+        """Test that a user cannot promote admin"""
+        reply = self.login_user()
+        token = reply['token']
+
+        response = self.tester.put(
+            '/api/v1/admin/1',
+            content_type='application/json',
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'This user is already admin!')
+        self.assertEqual(response.status_code, 400)
+
+    def test_user_cannot_promote_non_existent_user(self):
+        """Test that admin cannot promote non-existent user"""
+        reply = self.login_user()
+        token = reply['token']
+
+        response = self.tester.put(
+            '/api/v1/admin/2',
+            content_type='application/json',
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'This user does not exist!')
+        self.assertEqual(response.status_code, 400)
+
+    def test_non_admin_cannot_promote_another_user(self):
+        """Test that a non-admin user cannot promote user"""
+        reply = self.login_user()
+        token = reply['token']
+        user = dict(
+            username='barna',
+            email='barna@mail.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'barna successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        user = dict(
+            username='barna',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Logged in!')
+        self.assertEqual(response.status_code, 200)
+
+        token = reply['token']
+
+        response = self.tester.put(
+            '/api/v1/admin/2',
+            content_type='application/json',
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'],
+                         'You are not authorized to access this!')
+        self.assertEqual(response.status_code, 503)
+
     def tearDown(self):
         self.db.drop_table('users')
