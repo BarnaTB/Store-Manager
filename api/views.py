@@ -142,13 +142,15 @@ def add_product():
     try:
         data = request.get_json()
 
+        category = data.get('category')
         name = data.get('name')
         quantity = data.get('quantity')
         unit_price = data.get('unit_price')
         quantity = int(quantity)
         unit_price = int(unit_price)
 
-        validate_product = ValidateProduct(name, quantity, unit_price)
+        validate_product = ValidateProduct(
+            category, name, quantity, unit_price)
         product = Product(name, quantity, unit_price)
         if validate_product.validate() is False:
             return jsonify({
@@ -265,13 +267,15 @@ def update_product(product_id):
     try:
         data = request.get_json()
         name = data.get('name')
+        category = data.get('category')
         quantity = data.get('quantity')
         unit_price = data.get('unit_price')
         unit_price = int(unit_price)
         quantity = int(quantity)
         product_id = int(product_id)
 
-        validate_product = ValidateProduct(name, quantity, unit_price)
+        validate_product = ValidateProduct(
+            category, name, quantity, unit_price)
         product = Product(name, quantity, unit_price)
         if validate_product.validate() is False:
             return jsonify({
