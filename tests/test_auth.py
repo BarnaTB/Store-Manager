@@ -34,6 +34,60 @@ class TestAuth(BaseTest):
         self.assertEqual(reply['message'], 'barna successfully registered!')
         self.assertEqual(response.status_code, 201)
 
+    def test_register_unauthorized_user(self):
+        """Test that a user can register successfully"""
+        reply = self.login_user()
+        token = reply['token']
+        user = dict(
+            username='barna',
+            email='barna@mail.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        user = dict(
+            username='barna',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/login',
+            content_type='application/json',
+            data=json.dumps(user)
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Logged in!')
+        self.assertEqual(response.status_code, 200)
+
+        token = reply['token']
+
+        user = dict(
+            username='john',
+            email='john@mail.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'],
+                         'You are not authorized to access this!')
+        self.assertEqual(response.status_code, 503)
+
     def test_registration_with_empty_username_field(self):
         """Test that a user cannot register with empty fields"""
         reply = self.login_user()
@@ -189,6 +243,30 @@ lowercase and number characcters and must be longer than 5 characters!')
         reply = json.loads(response.data.decode())
 
         self.assertEqual(reply['message'], 'This email is already taken!')
+        self.assertEqual(response.status_code, 400)
+
+    def test_register_with_vague_username(self):
+        """Test that user cannot register with non-alphabets"""
+        reply = self.login_user()
+        token = reply['token']
+
+        user = dict(
+            username='=',
+            email='barna@mail.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'Username cannot be empty and must contain \
+alphabetical characters!')
         self.assertEqual(response.status_code, 400)
 
     def test_user_login(self):
@@ -464,6 +542,39 @@ lowercase and number characcters and must be longer than 5 characters!')
         self.assertEqual(reply['message'],
                          'You are not authorized to access this!')
         self.assertEqual(response.status_code, 503)
+
+    def test_promote_user_with_vague_id(self):
+        """Test that admin user cannot promote user with vague id"""
+        reply = self.login_user()
+        token = reply['token']
+        user = dict(
+            username='barna',
+            email='barna@mail.com',
+            password='Pass1234'
+        )
+
+        response = self.tester.post(
+            '/api/v1/signup',
+            content_type='application/json',
+            data=json.dumps(user),
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'barna successfully registered!')
+        self.assertEqual(response.status_code, 201)
+
+        response = self.tester.put(
+            '/api/v1/admin/%',
+            content_type='application/json',
+            headers={'Authorization': 'Bearer {}'.format(token)}
+        )
+
+        reply = json.loads(response.data.decode())
+
+        self.assertEqual(reply['message'], 'The user id should be a number!')
+        self.assertEqual(response.status_code, 400)
 
     def tearDown(self):
         self.db.drop_table('users')

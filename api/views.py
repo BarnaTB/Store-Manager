@@ -31,51 +31,46 @@ def signup():
         return jsonify({
             'message': 'You are not authorized to access this!'
         }), 503
-    try:
-        data = request.get_json()
+    data = request.get_json()
 
-        username = data.get('username')
-        email = data.get('email')
-        password = data.get('password')
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
 
-        user = ValidateUser(username, email, password)
+    user = ValidateUser(username, email, password)
 
-        if not user.validate_username() or \
-                ValidateUser.validate_punctuation(username):
-            return jsonify({
-                'message': 'Username cannot be empty and must contain \
+    if not user.validate_username() or \
+            ValidateUser.validate_punctuation(username):
+        return jsonify({
+            'message': 'Username cannot be empty and must contain \
 alphabetical characters!'
-            }), 400
-        elif not user.validate_email():
-            return jsonify({
-                'message': 'Email cannot be empty and must be in the form \
-(john.doe@example.com)'
-            }), 400
-        elif not user.validate_password():
-            return jsonify({
-                'message': 'Password should contain at least one uppercase, \
-lowercase and number characcters and must be longer than 5 characters!'
-            }), 400
-        elif Product.query('users', 'username', username):
-            return jsonify({
-                'message': 'This username is already taken!'
-            }), 400
-        elif Product.query('users', 'email', email):
-            return jsonify({
-                'message': 'This email is already taken!'
-            }), 400
-        user = User(username, email, password)
-        hashed_password = user.generate_hash()
-        user = User(username, email, hashed_password)
-        username = user.insert_user()
-
-        return jsonify({
-            'message': '{} successfully registered!'.format(username)
-        }), 201
-    except Exception:
-        return jsonify({
-            'message': 'Something went wrong with your inputs!'
         }), 400
+    elif not user.validate_email():
+        return jsonify({
+            'message': 'Email cannot be empty and must be in the form \
+(john.doe@example.com)'
+        }), 400
+    elif not user.validate_password():
+        return jsonify({
+            'message': 'Password should contain at least one uppercase, \
+lowercase and number characcters and must be longer than 5 characters!'
+        }), 400
+    elif Product.query('users', 'username', username):
+        return jsonify({
+            'message': 'This username is already taken!'
+        }), 400
+    elif Product.query('users', 'email', email):
+        return jsonify({
+            'message': 'This email is already taken!'
+        }), 400
+    user = User(username, email, password)
+    hashed_password = user.generate_hash()
+    user = User(username, email, hashed_password)
+    username = user.insert_user()
+
+    return jsonify({
+        'message': '{} successfully registered!'.format(username)
+    }), 201
 
 
 @blueprint.route('/login', methods=['POST'])
@@ -88,37 +83,32 @@ def login():
 
     A token and a success message
     """
-    try:
-        data = request.get_json()
+    data = request.get_json()
 
-        username = data.get('username')
-        password = data.get('password')
+    username = data.get('username')
+    password = data.get('password')
 
-        user = ValidateUser(username, False, password)
+    user = ValidateUser(username, False, password)
 
-        if not user.validate_username() or not password or password.isspace():
-            return jsonify({
-                'message': 'One of the required fields is empty!'
-            }), 400
-        elif not Product.query('users', 'username', username):
-            return jsonify({
-                'message': 'Sorry wrong username!'
-            }), 400
-        elif not User.verify_password(username, password):
-            return jsonify({
-                'message': 'Sorry wrong password!'
-            }), 400
-        expiry = datetime.timedelta(days=1)
-        token = create_access_token(
-            identity=username, expires_delta=expiry)
+    if not user.validate_username() or not password or password.isspace():
         return jsonify({
-            'token': token,
-            'message': 'Logged in!'
-        }), 200
-    except Exception:
-        return jsonify({
-            'message': 'Something went wrong with your inputs!'
+            'message': 'One of the required fields is empty!'
         }), 400
+    elif not Product.query('users', 'username', username):
+        return jsonify({
+            'message': 'Sorry wrong username!'
+        }), 400
+    elif not User.verify_password(username, password):
+        return jsonify({
+            'message': 'Sorry wrong password!'
+        }), 400
+    expiry = datetime.timedelta(days=1)
+    token = create_access_token(
+        identity=username, expires_delta=expiry)
+    return jsonify({
+        'token': token,
+        'message': 'Logged in!'
+    }), 200
 
 
 @blueprint.route('/admin/<user_id>', methods=['PUT'])
@@ -134,13 +124,14 @@ def make_admin(user_id):
     username = get_jwt_identity()
     user = Product.query('users', 'username', username)
 
-    if user[-1] is False:
-        return jsonify({
-            'message': 'You are not authorized to access this!'
-        }), 503
     try:
-        user = Product.query('users', 'user_id', user_id)
+        user_id = int(user_id)
 
+        if user[-1] is False:
+            return jsonify({
+                'message': 'You are not authorized to access this!'
+            }), 503
+        user = Product.query('users', 'user_id', user_id)
         if not user:
             return jsonify({
                 'message': 'This user does not exist!'
@@ -207,10 +198,6 @@ contains invalid characters!'
     except ValueError:
         return jsonify({
             'message': 'The unit price and quantity must be numbers!'
-        }), 400
-    except Exception:
-        return jsonify({
-            'message': 'Something went wrong with your inputs!'
         }), 400
 
 
@@ -334,10 +321,6 @@ contains invalid characters!'
             'message': 'Product id, quantity and unit price should be \
 numbers!'
         }), 400
-    except Exception:
-        return jsonify({
-            'message': 'Something went wrong with your inputs!'
-        }), 400
 
 
 @blueprint.route('/products/<product_id>', methods=['DELETE'])
@@ -432,10 +415,6 @@ def add_sale():
     except ValueError:
         return jsonify({
             'message': 'Quantity should be a number!'
-        }), 400
-    except Exception:
-        return jsonify({
-            'message': 'Something went wrong with your inputs!'
         }), 400
 
 
