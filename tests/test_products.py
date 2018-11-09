@@ -52,6 +52,7 @@ class TestProduct(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -89,6 +90,7 @@ class TestProduct(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -125,7 +127,8 @@ class TestProduct(BaseTest):
         token = reply['token']
 
         product = dict(
-            name=';',
+            category=';',
+            name='sugar',
             unit_price=1000,
             quantity=100
         )
@@ -162,6 +165,7 @@ contains invalid characters!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='',
             unit_price=1000,
             quantity=100
@@ -200,6 +204,7 @@ contains invalid characters!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='sugar',
             unit_price='enamba',
             quantity=100
@@ -237,6 +242,7 @@ contains invalid characters!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -285,6 +291,7 @@ contains invalid characters!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -360,6 +367,7 @@ contains invalid characters!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -406,6 +414,7 @@ contains invalid characters!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -452,6 +461,7 @@ contains invalid characters!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -550,6 +560,7 @@ contains invalid characters!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -567,6 +578,7 @@ contains invalid characters!')
         self.assertEqual(response.status_code, 201)
 
         new_product = dict(
+            category='groceries',
             name='sukaali',
             quantity=100,
             unit_price=1300
@@ -604,6 +616,7 @@ contains invalid characters!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -621,6 +634,7 @@ contains invalid characters!')
         self.assertEqual(response.status_code, 201)
 
         new_product = dict(
+            category='groceries',
             name='sukaali',
             quantity='ten',
             unit_price='onethousand'
@@ -660,6 +674,7 @@ contains invalid characters!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -677,6 +692,7 @@ contains invalid characters!')
         self.assertEqual(response.status_code, 201)
 
         new_product = dict(
+            category='groceries',
             name='',
             quantity=100,
             unit_price=1300
@@ -716,6 +732,7 @@ contains invalid characters!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -733,6 +750,7 @@ contains invalid characters!')
         self.assertEqual(response.status_code, 201)
 
         new_product = dict(
+            category='groceries',
             name='sukaali',
             quantity='kilo kikumi',
             unit_price=1300
@@ -772,6 +790,7 @@ numbers!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -789,6 +808,7 @@ numbers!')
         self.assertEqual(response.status_code, 201)
 
         new_product = dict(
+            category='groceries',
             name='sukaali',
             quantity=100,
             unit_price=1300
@@ -847,6 +867,7 @@ numbers!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -884,6 +905,7 @@ numbers!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -1011,6 +1033,7 @@ numbers!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100
@@ -1057,6 +1080,7 @@ numbers!')
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='Sugar',
             unit_price=1000,
             quantity=100

@@ -31,6 +31,7 @@ class TestSale(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='sugar',
             unit_price=1000,
             quantity=100
@@ -120,6 +121,7 @@ class TestSale(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='sugar',
             unit_price=1000,
             quantity=100
@@ -210,6 +212,7 @@ class TestSale(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='sugar',
             unit_price=1000,
             quantity=100
@@ -354,6 +357,7 @@ class TestSale(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='sugar',
             unit_price=1000,
             quantity=10
@@ -460,6 +464,7 @@ class TestSale(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='sugar',
             unit_price=1000,
             quantity=10
@@ -550,6 +555,7 @@ class TestSale(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='sugar',
             unit_price=1000,
             quantity=100
@@ -649,6 +655,7 @@ class TestSale(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='sugar',
             unit_price=1000,
             quantity=100
@@ -769,6 +776,7 @@ class TestSale(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='sugar',
             unit_price=1000,
             quantity=100
@@ -851,6 +859,7 @@ class TestSale(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='sugar',
             unit_price=1000,
             quantity=100
@@ -1000,6 +1009,7 @@ class TestSale(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='sugar',
             unit_price=1000,
             quantity=100
@@ -1099,6 +1109,7 @@ class TestSale(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='sugar',
             unit_price=1000,
             quantity=100
@@ -1216,6 +1227,7 @@ class TestSale(BaseTest):
         token = reply['token']
 
         product = dict(
+            category='groceries',
             name='sugar',
             unit_price=1000,
             quantity=100

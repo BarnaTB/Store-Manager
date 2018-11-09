@@ -28,9 +28,10 @@ class ValidateSale(object):
 class ValidateProduct(ValidateSale):
     """Class to validate product attributes"""
 
-    def __init__(self, name, quantity, unit_price):
+    def __init__(self, category, name, quantity, unit_price):
         ValidateSale.__init__(self, name, quantity)
         self.unit_price = unit_price
+        self.category = category
 
     def validate(self):
         """
@@ -43,13 +44,14 @@ class ValidateProduct(ValidateSale):
         False - if one or all of the product details  are invalid.
         """
         if not self.name or not self.unit_price or not self.quantity or\
-                self.name.isspace() or not self.name or \
-                self.validate_punctuation():
+                self.name.isspace() or not self.category or \
+                self.validate_punctuation(self.name) or \
+                self.validate_punctuation(self.category):
             return False
         else:
             return True
 
-    def validate_punctuation(self):
+    def validate_punctuation(self, word):
         """
         Method to check for punctuation marks in a string.
 
@@ -58,7 +60,7 @@ class ValidateProduct(ValidateSale):
         True if the string contains punctuation marks
         """
         result = ""
-        for character in self.name:
+        for character in word:
             if character in string.punctuation:
                 result += character
         if result:
