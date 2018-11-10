@@ -13,42 +13,7 @@ class TestProduct(BaseTest):
 
     def test_add_product_not_admin(self):
         """Test non-admin users cannot access add a product"""
-        reply = self.login_user()
-        token = reply['token']
-
-        user = dict(
-            username='barna',
-            email='barna@mail.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'barna successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        user = dict(
-            username='barna',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_attendant()
         token = reply['token']
 
         product = dict(
@@ -72,21 +37,7 @@ class TestProduct(BaseTest):
 
     def test_admin_add_product(self):
         """Test that admin user can add a product"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
         product = dict(
@@ -109,21 +60,7 @@ class TestProduct(BaseTest):
 
     def test_admin_add_product_with_punctutations(self):
         """Test that a user cannot add a product with only punctuation marks"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
         product = dict(
@@ -147,21 +84,7 @@ contains invalid characters!')
 
     def test_add_product_missing_fields(self):
         """Test that empty fields are not accepted"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
         product = dict(
@@ -186,21 +109,7 @@ contains invalid characters!')
 
     def test_unit_price_must_be_number(self):
         """Test that a unit price is strictly a number"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
         product = dict(
@@ -224,21 +133,7 @@ contains invalid characters!')
 
     def test_product_already_exists(self):
         """Test that a user cannot add a product which already exists"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
         product = dict(
@@ -273,40 +168,12 @@ contains invalid characters!')
 
     def test_view_products(self):
         """Test that a user can view all products in the store"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
-        product = dict(
-            category='groceries',
-            name='Sugar',
-            unit_price=1000,
-            quantity=100
-        )
-        response = self.tester.post(
-            '/api/v1/products',
-            content_type='application/json',
-            data=json.dumps(product),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
+        reply = self.add_product()
 
         self.assertEqual(reply['message'], 'Product added successfully!')
-        self.assertEqual(response.status_code, 201)
 
         response = self.tester.get(
             '/api/v1/products',
@@ -320,21 +187,7 @@ contains invalid characters!')
 
     def test_view_products_from_empty_list(self):
         """Test that a user cannot view products from an empty list"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
         response = self.tester.get(
@@ -349,40 +202,12 @@ contains invalid characters!')
 
     def test_view_one_product(self):
         """Test that user can view a single product"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
-        product = dict(
-            category='groceries',
-            name='Sugar',
-            unit_price=1000,
-            quantity=100
-        )
-        response = self.tester.post(
-            '/api/v1/products',
-            content_type='application/json',
-            data=json.dumps(product),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
+        reply = self.add_product()
 
         self.assertEqual(reply['message'], 'Product added successfully!')
-        self.assertEqual(response.status_code, 201)
 
         response = self.tester.get(
             '/api/v1/products/1',
@@ -396,40 +221,10 @@ contains invalid characters!')
 
     def test_view_product_which_does_exist(self):
         """Test that a user cannot view an object which does not exist"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
-        product = dict(
-            category='groceries',
-            name='Sugar',
-            unit_price=1000,
-            quantity=100
-        )
-        response = self.tester.post(
-            '/api/v1/products',
-            content_type='application/json',
-            data=json.dumps(product),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Product added successfully!')
-        self.assertEqual(response.status_code, 201)
+        reply = self.add_product()
 
         response = self.tester.get(
             '/api/v1/products/2',
@@ -443,40 +238,12 @@ contains invalid characters!')
 
     def test_view_one_product_with_vague_id(self):
         """Test that a user cannot view one product with non-integer id"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
-        product = dict(
-            category='groceries',
-            name='Sugar',
-            unit_price=1000,
-            quantity=100
-        )
-        response = self.tester.post(
-            '/api/v1/products',
-            content_type='application/json',
-            data=json.dumps(product),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
+        reply = self.add_product()
 
         self.assertEqual(reply['message'], 'Product added successfully!')
-        self.assertEqual(response.status_code, 201)
 
         response = self.tester.get(
             '/api/v1/products/2the',
@@ -491,42 +258,9 @@ contains invalid characters!')
 
     def test_view_single_product_from_empty_list(self):
         """Test that a user cannot view a product from an empty list"""
-        reply = self.login_user()
-        token = reply['token']
-
-        user = dict(
-            username='barna',
-            email='barna@mail.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'barna successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        user = dict(
-            username='barna',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
+        reply = self.login_attendant()
 
         self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
 
         token = reply['token']
 
@@ -542,40 +276,12 @@ contains invalid characters!')
 
     def test_update_product(self):
         """Test that a product can be updated successfully"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
-        product = dict(
-            category='groceries',
-            name='Sugar',
-            unit_price=1000,
-            quantity=100
-        )
-        response = self.tester.post(
-            '/api/v1/products',
-            content_type='application/json',
-            data=json.dumps(product),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
+        reply = self.add_product()
 
         self.assertEqual(reply['message'], 'Product added successfully!')
-        self.assertEqual(response.status_code, 201)
 
         new_product = dict(
             category='groceries',
@@ -598,40 +304,12 @@ contains invalid characters!')
 
     def test_update_product_id_with_vague_ids(self):
         """Test that a user cannot update a product with non-integer ids"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
-        product = dict(
-            category='groceries',
-            name='Sugar',
-            unit_price=1000,
-            quantity=100
-        )
-        response = self.tester.post(
-            '/api/v1/products',
-            content_type='application/json',
-            data=json.dumps(product),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
+        reply = self.add_product()
 
         self.assertEqual(reply['message'], 'Product added successfully!')
-        self.assertEqual(response.status_code, 201)
 
         new_product = dict(
             category='groceries',
@@ -656,40 +334,12 @@ contains invalid characters!')
 
     def test_update_product_with_empty_fields(self):
         """Test admin cannot update product with empty spaces"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
-        product = dict(
-            category='groceries',
-            name='Sugar',
-            unit_price=1000,
-            quantity=100
-        )
-        response = self.tester.post(
-            '/api/v1/products',
-            content_type='application/json',
-            data=json.dumps(product),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
+        reply = self.add_product()
 
         self.assertEqual(reply['message'], 'Product added successfully!')
-        self.assertEqual(response.status_code, 201)
 
         new_product = dict(
             category='groceries',
@@ -714,40 +364,12 @@ contains invalid characters!')
 
     def test_update_with_words_for_quantity(self):
         """Test user cannot update quantity with words"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
-        product = dict(
-            category='groceries',
-            name='Sugar',
-            unit_price=1000,
-            quantity=100
-        )
-        response = self.tester.post(
-            '/api/v1/products',
-            content_type='application/json',
-            data=json.dumps(product),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
+        reply = self.add_product()
 
         self.assertEqual(reply['message'], 'Product added successfully!')
-        self.assertEqual(response.status_code, 201)
 
         new_product = dict(
             category='groceries',
@@ -772,40 +394,12 @@ numbers!')
 
     def test_update_product_which_does_not_exist(self):
         """Test that admin cannot a product which does not exist"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
-        product = dict(
-            category='groceries',
-            name='Sugar',
-            unit_price=1000,
-            quantity=100
-        )
-        response = self.tester.post(
-            '/api/v1/products',
-            content_type='application/json',
-            data=json.dumps(product),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
+        reply = self.add_product()
 
         self.assertEqual(reply['message'], 'Product added successfully!')
-        self.assertEqual(response.status_code, 201)
 
         new_product = dict(
             category='groceries',
@@ -828,42 +422,7 @@ numbers!')
 
     def test_user_update_product_unauthorized(self):
         """Test attendant cannot update product"""
-        reply = self.login_user()
-        token = reply['token']
-
-        user = dict(
-            username='barna',
-            email='barna@mail.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'barna successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        user = dict(
-            username='barna',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_attendant()
         token = reply['token']
 
         product = dict(
@@ -887,40 +446,12 @@ numbers!')
 
     def test_admin_delete_product(self):
         """Test admin can delete a product"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
-        product = dict(
-            category='groceries',
-            name='Sugar',
-            unit_price=1000,
-            quantity=100
-        )
-        response = self.tester.post(
-            '/api/v1/products',
-            content_type='application/json',
-            data=json.dumps(product),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
+        reply = self.add_product()
 
         self.assertEqual(reply['message'], 'Product added successfully!')
-        self.assertEqual(response.status_code, 201)
 
         response = self.tester.delete(
             '/api/v1/products/1',
@@ -934,42 +465,7 @@ numbers!')
 
     def test_delete_product_attendant(self):
         """Test attendant should not be able to delete a product"""
-        reply = self.login_user()
-        token = reply['token']
-
-        user = dict(
-            username='barna',
-            email='barna@mail.com',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/signup',
-            content_type='application/json',
-            data=json.dumps(user),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'barna successfully registered!')
-        self.assertEqual(response.status_code, 201)
-
-        user = dict(
-            username='barna',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_attendant()
         token = reply['token']
 
         response = self.tester.delete(
@@ -985,21 +481,7 @@ numbers!')
 
     def test_delete_product_without_products(self):
         """Test that a user cannot delete a product if there aren't any"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
         response = self.tester.delete(
@@ -1015,40 +497,12 @@ numbers!')
 
     def test_delete_product_which_does_not_exist(self):
         """Test that user cannot delete a product which does not exist"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
-        product = dict(
-            category='groceries',
-            name='Sugar',
-            unit_price=1000,
-            quantity=100
-        )
-        response = self.tester.post(
-            '/api/v1/products',
-            content_type='application/json',
-            data=json.dumps(product),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
+        reply = self.add_product()
 
         self.assertEqual(reply['message'], 'Product added successfully!')
-        self.assertEqual(response.status_code, 201)
 
         response = self.tester.delete(
             '/api/v1/products/2',
@@ -1062,40 +516,12 @@ numbers!')
 
     def test_delete_product_with_vague_id(self):
         """Test that user cannot delete a product with non-integer id"""
-        user = dict(
-            username='admin',
-            password='Pass1234'
-        )
-
-        response = self.tester.post(
-            '/api/v1/login',
-            content_type='application/json',
-            data=json.dumps(user)
-        )
-
-        reply = json.loads(response.data.decode())
-
-        self.assertEqual(reply['message'], 'Logged in!')
-        self.assertEqual(response.status_code, 200)
+        reply = self.login_user()
         token = reply['token']
 
-        product = dict(
-            category='groceries',
-            name='Sugar',
-            unit_price=1000,
-            quantity=100
-        )
-        response = self.tester.post(
-            '/api/v1/products',
-            content_type='application/json',
-            data=json.dumps(product),
-            headers={'Authorization': 'Bearer {}'.format(token)}
-        )
-
-        reply = json.loads(response.data.decode())
+        reply = self.add_product()
 
         self.assertEqual(reply['message'], 'Product added successfully!')
-        self.assertEqual(response.status_code, 201)
 
         response = self.tester.delete(
             '/api/v1/products/the',
