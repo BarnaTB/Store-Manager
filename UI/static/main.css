@@ -1,0 +1,113 @@
+@import url(https://fonts.googleapis.com/css?family=Karla|Quicksand);
+
+body {
+    font-size: 1em;
+    font-family: 'Quicksand', sans-serif;
+    font-family: 'Karla', sans-serif;
+    text-align: center;
+    margin: 0;
+}
+
+.background-image {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 1;
+
+    display: block;
+    background-image: url('../images/background.png');
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+
+    margin-top: -5%;
+
+    -webkit-filter: blur(5px) grayscale(70%);
+    -moz-filter: blur(5px) grayscale(70%);
+    -o-filter: blur(5px) grayscale(70%);
+    -ms-filter: blur(5px) grayscale(70%);
+    filter: blur(5px) grayscale(70%);
+}
+
+.tinted-image {
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    overflow: auto;
+    top: 0px;
+    left: 0px;
+    background: rgba(139, 145, 170, 0.822);
+    background-size: 100%;
+}
+  
+.content {
+    position: relative;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+h1 {
+    color: #ffffff;
+    border-radius: 15px;
+    width: 60%;
+    margin: auto;
+    margin-bottom: 5%;
+    font-size: 2em;
+    padding: 30px;
+}
+
+.container {
+    width: 60%;
+    margin: auto;
+    opacity: 0.7;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+input {
+    display: block;
+    margin: 0 auto;
+    padding: 13px;
+    border: 1px solid #ffffff;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #757575;
+    color: #000000;
+    outline: none;
+}
+
+#submit{
+    width: 230px;
+    background-color: #5c64f8;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    outline: none;
+}
+
+#submit:hover {
+    background-color: #020b42;
+    color: rgb(255, 200, 80);
+    border: 1px solid rgb(255, 200, 80);
+    cursor: pointer;
+    transition: 0.7s;
+}
+
+form {
+    background-color: #ffffff;
+    margin: 0 auto;
+    padding: 30px;
+    width: 290px;
+    border-radius: 15px;
+}
+
+.login-link a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    color: rgb(136, 49, 49);
+}
