@@ -17,12 +17,12 @@ function loginUser(event) {
     .then((response) => response.json())
         .then((data) => {
             if (data.message == "Logged in!"){
-                window.location.replace('../Store-Manager/UI/templates/home.html')
+                window.location.replace('./UI/templates/home.html')
                 localStorage.setItem('token', data.token)
             }else{
                 invalid.textContent = '' + data.message
             }
             console.log(data)
         })
-        .catch((err) => console.log(err), invalid.textContent = '' + data.message)
+        .catch((err) => console.log(err), invalid.textContent = "It's not you. It's us! Something went terribly wrong!")
 }

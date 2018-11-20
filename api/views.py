@@ -69,7 +69,8 @@ lowercase and number characcters and must be longer than 5 characters!'
     username = user.insert_user()
 
     return jsonify({
-        'message': '{} successfully registered!'.format(username)
+        'message': '{} successfully registered!'.format(username),
+        'status': 'OK'
     }), 201
 
 
