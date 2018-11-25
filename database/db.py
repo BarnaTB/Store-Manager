@@ -39,6 +39,7 @@ class DatabaseConnection:
                 """
                 CREATE TABLE IF NOT EXISTS products (
                     product_id SERIAL PRIMARY KEY,
+                    category TEXT NOT NULL,
                     name TEXT NOT NULL,
                     quantity INTEGER NOT NULL,
                     unit_price INTEGER NOT NULL
@@ -67,13 +68,13 @@ class DatabaseConnection:
             print(e)
             print('Failed to connect to database!')
 
-    def insert_product(self, name, quantity, unit_price):
+    def insert_product(self, category, name, quantity, unit_price):
         """SQL query to add a product to the database"""
 
         insert_product_command = """
-        INSERT INTO products(name, quantity, unit_price)\
-        VALUES('{}', '{}', '{}');
-        """.format(name, quantity, unit_price)
+        INSERT INTO products(category, name, quantity, unit_price)\
+        VALUES('{}', '{}', '{}', '{}');
+        """.format(category, name, quantity, unit_price)
         self.cursor.execute(insert_product_command)
 
     def insert_admin(self, username, email, password):

@@ -10,7 +10,8 @@ class Product(object):
     """Class handles all operations on a product object"""
     products = []
 
-    def __init__(self, name, quantity, unit_price):
+    def __init__(self, category, name, quantity, unit_price):
+        self.category = category
         self.name = name
         self.quantity = quantity
         self.unit_price = unit_price
@@ -27,13 +28,14 @@ class Product(object):
         """
         if db.query('products', 'name', self.name) is not None:
             return False
-        db.insert_product(self.name, self.quantity, self.unit_price)
+        db.insert_product(self.category, self.name, self.quantity, self.unit_price)
         product = db.query('products', 'name', self.name)
         return {
             '_id': product[0],
-            'name': product[1],
-            'quantity': product[2],
-            'unit_price': product[3]
+            'category': product[1],
+            'name': product[2],
+            'quantity': product[3],
+            'unit_price': product[4]
         }
 
     @staticmethod
@@ -56,9 +58,10 @@ class Product(object):
             for product in products:
                 product_dict = {
                     '_id': product[0],
-                    'name': product[1],
-                    'quantity': product[2],
-                    'unit_price': product[3]
+                    'category': product[1],
+                    'name': product[2],
+                    'quantity': product[3],
+                    'unit_price': product[4]
                 }
                 Product.products.append(product_dict)
             return Product.products

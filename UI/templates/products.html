@@ -31,46 +31,62 @@
             </div>
         </div>
         <div class="container">
+            <p id="invalid"></p>
             <h1>Products</h1>
             <div id="store">
-                <table>
+                <p>Click the refresh button to view all products in the store. <button id="refresh">Refresh table</button></p>
+                <table id="table">
                     <thead>
+                        <th>Product Id</th>
+                        <th>Category</th>
                         <th>Item</th>
-                        <th>Unit Price</th>
                         <th>Available Quantity</th>
+                        <th>Unit Price</th>
                         <th>Store</th>
                     </thead>
-                    <tr>
-                        <td>Sugar <button type="submit">Modify</button></td>
-                        <td>3000 <button type="submit">Modify</button></td>
-                        <td>100 kg <button type="submit">Modify</button></td>
-                        <td><button type="submit" id="delete-btn">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form action="">
-                                <div class="flex-wrap">
-                                    <input type="text" name="item" id="item-name" placeholder="Item Name" required>
-                                </div>
-                            </form>
-                        </td>
-                        <td>
-                            <form action="">
-                                <div class="flex-wrap">
-                                    <input type="number" name="unit-price" id="unit-price" placeholder="Unit Price"
-                                        required>
-                                </div>
-                            </form>
-                        </td>
-                        <td>
-                            <form action="">
-                                <div class="flex-wrap">
-                                    <input type="number" name="quantity" id="quantity" placeholder="Quantity" required>
-                                </div>
-                            </form>
-                        </td>
-                        <td><button type="submit">Add to Store</button></td>
-                    </tr>
+                    <tbody>
+                        <tr id="">
+                            <td id="product-id"></td>
+                            <td id="product-category"></td>
+                            <td id="product-name"></td>
+                            <td id="product-quantity"></td>
+                            <td id="product-unitprice"></td>
+                            <td id="delete-product"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <form action="">
+                                    <div class="flex-wrap">
+                                        <input type="text" name="item" id="category" placeholder="Category" required>
+                                    </div>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="">
+                                    <div class="flex-wrap">
+                                        <input type="text" name="item" id="name" placeholder="Item Name" required>
+                                    </div>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="">
+                                    <div class="flex-wrap">
+                                        <input type="number" name="quantity" id="quantity" placeholder="Quantity" required>
+                                    </div>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="">
+                                    <div class="flex-wrap">
+                                        <input type="number" name="unit-price" id="unit-price" placeholder="Unit Price"
+                                            required>
+                                    </div>
+                                </form>
+                            </td>
+                            <td><button id="submit-btn" type="submit">Add to Store</button></td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -81,6 +97,7 @@
         </div>
     </div>
     <script src="../script/script.js"></script>
+    <script src="../script/addProduct.js"></script>
 </body>
 
 </html>
