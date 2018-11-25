@@ -46,6 +46,7 @@ function addProduct(event){
 }
 
 function refreshTable(){
+    event.preventDefault()
     let invalid = document.getElementById('invalid')
     let tableBody = document.querySelector('#table > tbody')
 
@@ -57,7 +58,6 @@ function refreshTable(){
     .then((response) => response.json())
         .then((data) => {
             if (data.message === 'Products Fetched!'){
-                console.log(data.products)
                 for (let product of data.products){
                     newRow = document.createElement('tr')
                     productId = document.createElement('td')

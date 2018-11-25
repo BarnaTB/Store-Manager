@@ -146,6 +146,7 @@ table input {
     background-color: #5c64f8;
     color: #ffffff;
     border: 1px solid #ffffff;
+    line-height: 3;
 }
 
 table #delete-btn {
