@@ -35,6 +35,31 @@
             <h1>Products</h1>
             <div id="store">
                 <p>Click the refresh button to view all products in the store. <button id="refresh">Refresh table</button></p>
+                <p>Click the button to modify a product in the store. <button id="show">Modify Product</button></p>
+                <div class="center hideform">
+                    <span id="close">&times;</span><br>
+                    <form>
+                        <input id="modify-id" type="number" name="product-id" placeholder="Product ID" required>
+                        <br>
+                        <br>
+                        <input id="modify-category" type="text" name="product-category" placeholder="New category"
+                            required>
+                        <br>
+                        <br>
+                        <input id="modify-name" type="text" name="product-name" placeholder="New name" required>
+                        <br>
+                        <br>
+                        <input id="modify-quantity" type="number" name="product-quantity" placeholder="New quantity"
+                            required>
+                        <br>
+                        <br>
+                        <input id="modify-unitprice" type="number" name="product-unitprice" placeholder="New unit price"
+                            required>
+                        <br>
+                        <br>
+                        <input id="modify-btn" type="submit" value="Modify">
+                    </form>
+                </div>
                 <table id="table">
                     <thead>
                         <th>Product Id</th>
@@ -72,7 +97,8 @@
                             <td>
                                 <form action="">
                                     <div class="flex-wrap">
-                                        <input type="number" name="quantity" id="quantity" placeholder="Quantity" required>
+                                        <input type="number" name="quantity" id="quantity" placeholder="Quantity"
+                                            required>
                                     </div>
                                 </form>
                             </td>
@@ -84,7 +110,7 @@
                                     </div>
                                 </form>
                             </td>
-                            <td><button id="submit-btn" type="submit">Add to Store</button></td>
+                            <td><button id="add-btn" type="submit">Add to Store</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -97,7 +123,9 @@
         </div>
     </div>
     <script src="../script/script.js"></script>
-    <script src="../script/addProduct.js"></script>
+    <script src="../script/products.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
 </body>
 
 </html>

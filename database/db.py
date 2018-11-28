@@ -118,10 +118,10 @@ class DatabaseConnection:
     def query(self, table, column, value):
         """Method to query user by their username"""
 
-        query_user_command = """
+        query = """
         SELECT * FROM {} WHERE {}='{}';
         """.format(table, column, value)
-        self.cursor.execute(query_user_command)
+        self.cursor.execute(query)
         row = self.cursor.fetchone()
 
         return row

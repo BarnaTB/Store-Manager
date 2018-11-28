@@ -302,7 +302,7 @@ def update_product(product_id):
 
         validate_product = ValidateProduct(
             category, name, quantity, unit_price)
-        product = Product(name, quantity, unit_price)
+        product = Product(category, name, quantity, unit_price)
         if validate_product.validate() is False:
             return jsonify({
                 'message': 'One of the required fields is empty or \
