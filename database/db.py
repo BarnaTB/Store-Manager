@@ -10,14 +10,20 @@ class DatabaseConnection:
         try:
             if os.getenv('APP_SETTINGS') == 'testing':
                 db = 'test_db'
+                user = 'postgres'
+                password = '##password'
+                host = 'localhost'
             else:
-                db = 'storemanager_db'
+                db = 'd4n3svpua70svl'
+                user='adqakiovjthdrs'
+                password='5650685df3ad03ecf8adaafd2d2558d0382c2c983ef051556c01234aa9255df3'
+                host='ec2-23-21-201-12.compute-1.amazonaws.com'
 
             self.connection = psycopg2.connect(
                 database=db,
-                user='postgres',
-                password='##password',
-                host='localhost'
+                user=user,
+                password=password,
+                host=host
             )
 
             self.cursor = self.connection.cursor()
