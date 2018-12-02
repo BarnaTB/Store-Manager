@@ -197,13 +197,15 @@ table #delete-btn:hover {
     float: right;
 }
 
-#modify-btn {
+#modify-btn,
+#submit-btn {
     background-color: #ffffff;
     border: 1px solid #5c64f8;
     color: #5c64f8;
 }
 
-#modify-btn:hover {
+#modify-btn:hover,
+#submit-btn:hover {
     background-color: #5c64f8;
     border: 1px solid #ffffff;
     color: #ffffff;
@@ -212,7 +214,8 @@ table #delete-btn:hover {
 
 span:hover,
 button:hover,
-#modify-btn:hover {
+#modify-btn:hover,
+#submit-btn:hover {
     cursor: pointer;
 }
 

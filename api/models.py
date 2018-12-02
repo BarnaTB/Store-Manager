@@ -28,7 +28,8 @@ class Product(object):
         """
         if db.query('products', 'name', self.name) is not None:
             return False
-        db.insert_product(self.category, self.name, self.quantity, self.unit_price)
+        db.insert_product(self.category, self.name,
+                          self.quantity, self.unit_price)
         product = db.query('products', 'name', self.name)
         return {
             '_id': product[0],
@@ -142,8 +143,9 @@ class Sale(Product):
     """Class handles all operations of a sale."""
     sales = []
 
-    def __init__(self, name, quantity, unit_price, author, total=0, date=''):
-        Product.__init__(self, name, quantity, unit_price)
+    def __init__(self, category, name, quantity, unit_price, author, total=0,
+            date=''):
+        Product.__init__(self, category, name, quantity, unit_price)
         self.author = author
         self.total = total
         self.date = date

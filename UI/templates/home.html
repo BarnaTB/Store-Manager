@@ -17,10 +17,9 @@
         <div class="nav-bar">
             <div class="topnav" id="my-top-nav">
                 <a href="home.html" id="active">Home</a>
-                <a href="sales.html" id="sales">My Sales</a>
+                <a href="sales.html" id="sales">All Sales</a>
                 <a href="products.html" id="products">Products</a>
                 <a href="records.html" id="sales-records">Records</a>
-                <a href="attendant.html">Register Attendant</a>
                 <a href="javascript:void(0);" class="icon" onclick="bars(this)">
                     <div class="container" onclick="">
                         <div class="bar1"></div>
@@ -31,9 +30,20 @@
             </div>
         </div>
         <div class="container">
+            <p id="invalid"></p>
             <h1>Available Products</h1>
             <div class="products">
                 <p>Click the refresh button to view all products in the store. <button id="refresh">Refresh table</button></p>
+                <div class="center hideform">
+                    <span id="close">&times;</span><br>
+                    <form>
+                        <input id="quantity" type="number" name="quantity" placeholder="Sale Quantity"
+                            required>
+                        <br>
+                        <br>
+                        <input id="submit-btn" type="submit" value="Sell">
+                    </form>
+                </div>
                 <table id="table">
                     <thead>
                         <th>Product ID</th>

@@ -7,8 +7,7 @@ const url = 'http://localhost:5000/api/v1/products'
 var token = localStorage.getItem('token')
 
 
-function addProduct(event){
-    event.preventDefault()
+function addProduct(){
     let category = document.getElementById('category')
     let name = document.getElementById('name')
     let quantity = document.getElementById('quantity')
@@ -38,7 +37,7 @@ function addProduct(event){
                 productQuantity.innerHTML = "" + data.product.quantity
                 productUnitPrice.innerHTML = "" + data.product.unit_price
                 deletePdt.innerHTML = '<button type="submit" id="delete-btn">Delete</button>'
-                deletePdt.addEventListener('click', deleteProduct(deletePdt))
+                deletePdt.addEventListener('click', deleteProduct)
                 invalid.textContent = data.message 
             }else{
                 invalid.textContent = data.message
@@ -62,6 +61,7 @@ function refreshTable(){
             if (data.message === 'Products Fetched!'){
                 for (let product of data.products){
                     newRow = document.createElement('tr')
+                    
                     productId = document.createElement('td')
                     productId.textContent = product._id
                     productCategory = document.createElement('td')
@@ -96,8 +96,7 @@ function refreshTable(){
         })
 }
 
-function modifyPopUp(event){
-    event.preventDefault()
+function modifyPopUp(){
     $('#show').on('click', () => {
         $('.center').show()
         $('#show').hide()
@@ -154,7 +153,7 @@ function deleteProduct(event){
     .then((response) => response.json())
         .then((data) => {
             if (data.message === 'Product deleted!'){
-                invalid.textContent = data.message + 'Refresh page and table to view your new inventory!'
+                invalid.textContent = data.message + ' Refresh page and table to view your new inventory!'
             }else{
                 invalid.textContent = data.message
             }

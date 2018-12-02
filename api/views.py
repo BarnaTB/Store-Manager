@@ -379,6 +379,7 @@ def add_sale():
     try:
         data = request.get_json()
 
+        category = ''
         name = data.get('name')
         quantity = data.get('quantity')
         quantity = int(quantity)
@@ -394,20 +395,20 @@ def add_sale():
             return jsonify({
                 'message': 'This product does not exist!'
             }), 400
-        elif product[2] <= 0:
+        elif product[3] <= 0:
             return jsonify({
                 'message': 'Product is out of stock!'
             }), 400
-        elif product[2] < quantity:
+        elif product[3] < quantity:
             return jsonify({
                 'message': 'Unfortunately we have less than you require!'
             }), 400
-        total = product[3] * quantity
+        total = product[4] * quantity
         now = datetime.datetime.now()
-        a_sale = Sale(name, quantity, product[3], username, total,
+        a_sale = Sale(category, name, quantity, product[4], username, total,
                       now.strftime('%H:%M:%S on %a, %dth %B %Y'))
         sale = a_sale.insert_sale()
-        new_quantity = product[2] - quantity
+        new_quantity = product[3] - quantity
         a_sale.update('products', 'quantity', new_quantity, 'name', name)
         return jsonify({
             'sale': sale,
