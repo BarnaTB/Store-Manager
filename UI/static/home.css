@@ -146,6 +146,7 @@ table input {
     background-color: #5c64f8;
     color: #ffffff;
     border: 1px solid #ffffff;
+    line-height: 3;
 }
 
 table #delete-btn {
@@ -170,6 +171,59 @@ table #delete-btn:hover {
 
 ::-ms-input-placeholder {
     color: #ffffff;
+}
+
+.center {
+    margin: auto;
+    width: 60%;
+    padding: 20px;
+    box-shadow: 0 30px 30px 1000px rgba(0, 0, 0, 1);
+    background-color: #5c64f8;
+    opacity: 0.7;
+    border-radius: 15px;
+}
+
+.center input {
+    background-color: #5c64f8;
+    border: 1px solid #ffffff;
+    padding: 13px;
+}
+
+.hideform {
+    display: none;
+}
+
+#close {
+    float: right;
+}
+
+#modify-btn,
+#submit-btn {
+    background-color: #ffffff;
+    border: 1px solid #5c64f8;
+    color: #5c64f8;
+}
+
+#modify-btn:hover,
+#submit-btn:hover {
+    background-color: #5c64f8;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    transition: 0.7s;
+}
+
+span:hover,
+button:hover,
+#modify-btn:hover,
+#submit-btn:hover {
+    cursor: pointer;
+}
+
+#refresh,
+#show {
+    color: #ffffff;
+    background-color: #5c64f8;
+    border: 1px solid #ffffff;
 }
 
 @media only screen and (max-width: 768px) {

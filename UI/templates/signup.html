@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Store-Manager | Login</title>
+    <title>Store-Manager | Register</title>
     <link rel="shortcut icon" href="../images/online-store.png" type="image/png">
     <link rel="stylesheet" type="text/css" href="../static/main.css">
 </head>
@@ -14,18 +14,21 @@
     <div class="background-image"></div>
     <div class="tinted-image"></div>
     <div class="content">
-        <div class="container">
-            <h1 id="heading">Login Here</h1>
-            <form action="home.html">
+        <div class="container" id="signup">
+            <p id="invalid"></p>
+            <h1>Register Here</h1>
+            <form id="signup-form">
                 <input type="text" name="username" id="username" placeholder="Username" required>
+                <input type="email" name="email" id="email" placeholder="Email" required>
                 <input type="password" name="password" id="password" placeholder="Password" required>
-                <input type="submit" id="submit" value="Login">
+                <input type="submit" id="submit" value="Register">
             </form>
         </div>
         <div class="login-link">
-            <p>Don't have an account? <a href="../index.html">Register Here</a></p>
+            <p>Already have an account? <a href="../../index.html">Login Here</a></p>
         </div>
     </div>
+    <script src="../script/signup.js"></script>
 
 </body>
 

@@ -1,0 +1,18 @@
+This enables an admin to view all sales in the store.
+---
+tags:
+    - Sales
+responses:
+  200:
+    description: Sales fetched!.
+  400:
+    description: Sales were not fectched!
+  503:
+    description: You are not authorized to access this!
+security:
+  - bearerAuth:
+      description: Pass the jwt token e.g Bearer <token>
+      type: http
+      scheme: bearer
+      in: header
+      bearerFormat: JWT
