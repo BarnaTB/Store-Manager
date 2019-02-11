@@ -1,6 +1,6 @@
 document.getElementById('login-form').addEventListener('submit', loginUser)
 
-const url = 'http://localhost:5000/api/v1/login'
+const url = 'https://store-manag.herokuapp.com/api/v1/login'
 
 function loginUser(event) {
     event.preventDefault()

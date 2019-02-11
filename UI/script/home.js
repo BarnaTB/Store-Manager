@@ -1,7 +1,7 @@
 document.getElementById('refresh').addEventListener('click', refreshTable)
 document.getElementById('submit-btn').addEventListener('click', sell)
 
-const url = 'http://localhost:5000/api/v1/products'
+const url = 'https://store-manag.herokuapp.com/api/v1/products'
 var token = localStorage.getItem('token')
 
 let table = document.querySelector('#table')

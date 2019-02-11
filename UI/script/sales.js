@@ -1,6 +1,6 @@
 window.onload = () => {
-    
-    const url = 'http://localhost:5000/api/v1/sales'
+
+    const url = 'https://store-manag.herokuapp.com/api/v1/sales'
     var token = localStorage.getItem('token')
 
     let invalid = document.getElementById('invalid')

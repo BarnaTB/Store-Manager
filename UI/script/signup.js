@@ -1,6 +1,6 @@
 document.getElementById('signup-form').addEventListener('submit', registerUser)
 
-const url = 'http://localhost:5000/api/v1/signup'
+const url = 'https://store-manag.herokuapp.com/api/v1/signup'
 
 function registerUser(event) {
     event.preventDefault()

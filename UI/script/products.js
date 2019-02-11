@@ -3,7 +3,7 @@ document.getElementById('refresh').addEventListener('click', refreshTable)
 document.getElementById('show').addEventListener('click', modifyPopUp)
 document.getElementById('modify-btn').addEventListener('click', modifyProduct)
 
-const url = 'http://localhost:5000/api/v1/products'
+const url = 'https://store-manag.herokuapp.com/api/v1/products'
 var token = localStorage.getItem('token')
 
 
